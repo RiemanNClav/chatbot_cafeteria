@@ -1,91 +1,165 @@
 version: "3.1"
 
 nlu:
-- intent: greet
+- intent: intent_inicio
   examples: |
+    - Hey 
     - hey
-    - hello
-    - hi
-    - hello there
-    - good morning
-    - good evening
-    - moin
-    - hey there
-    - let's go
-    - hey dude
-    - goodmorning
-    - goodevening
-    - good afternoon
+    - Hola
+    - HOLA
+    - hola
+    - Hola, Buenos dias
+    - Hola, Buenas tardes
+    - Hola, Buenas noches
+    - Que tal
+    - que tal
+    - QUE TAL
+    - que onda
+    - que Onda
+    - Que onda
+    - QUE ONDA
+    - hola, buenos dias
+    - hola, buenas tardes
+    - hola, buenas noches
+    - hola, BUENAS TARDES
+    - hola, BUENAS NOCHES
+    - hola, BUENOS DIAS
+    - hola buenos dias
+    - hola buenas tardes
+    - hola buenas noches
+    - Buenos Dias
+    - Buenas Tardes
+    - Buenas Noches
+    - buenos dias
+    - buenas tardes
+    - buenas noches
+    - BUENAS NOCHES
+    - BUENOS DIAS
+    - BUENAS TARDES
 
-- intent: goodbye
+- intent: intent_menu
   examples: |
-    - cu
-    - good by
-    - cee you later
-    - good night
-    - bye
-    - goodbye
-    - have a nice day
-    - see you around
-    - bye bye
-    - see you later
+    - ver menu
+    - Ver menu
+    - ver Menu
+    - Ver Menu
+    - VER MENU
+    - Menu
+    - menu
+    - MENU
+    - vermenu
+    - VERMENU
+    - VerMenu
 
-- intent: affirm
+- intent: intent_pedido
   examples: |
-    - yes
-    - y
-    - indeed
-    - of course
-    - that sounds good
-    - correct
+    - hacer pedido
+    - Hacer pedido
+    - hacer Pedido
+    - Hacer Pedido
+    - HACER PEDIDO
+    - hacerpedido
+    - HacerPedido
+    - HACERPEDIDO
+    - pedido
+    - Pedido
+    - PEDIDO
 
-- intent: deny
-  examples: |
-    - no
-    - n
-    - never
-    - I don't think so
-    - don't like that
-    - no way
-    - not really
 
-- intent: mood_great
+- intent: intent_horario
   examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
+    - ver horarios
+    - Ver horarios
+    - ver Horarios
+    - Ver Horarios
+    - VER HORARIOS
+    - verhorarios
+    - VerHorarios
+    - VERHORARIOS
+    - horarios
+    - Horarios
+    - HORARIOS
 
-- intent: mood_unhappy
-  examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
 
-- intent: bot_challenge
+
+- intent: intent_forma_pago
   examples: |
-    - are you a bot?
-    - are you a human?
-    - am I talking to a bot?
-    - am I talking to a human?
+    - formas de pago
+    - Formas de pago
+    - Formas De pago
+    - Formas de Pago
+    - forma de pago
+    - Forma de pago
+    - Forma De Pago
+    - forma de pagar
+    - Forma de pagar
+    - FORMA DE PAGAR 
+    - Formas
+    - formas
+    - FORMAS
+    - Pagos
+    - pagos
+    - PAGOS
+
+
+- intent: intent_registro_numero_registro
+  examples: |
+    - [registrado](numero)
+    - [Registrado](numero)
+    - [REGISTRADO](numero)
+    - [problema](numero)
+    - [Problema](numero)
+    - [PROBLEMA](numero)
+
+- intent: intent_registro_telefono
+  examples: |
+    - [5565637294](telefono)
+    - [4491234567](telefono)
+    - [6647890123](telefono)
+    - [8189876543](telefono)
+    - [9937654321](telefono)
+    - [8712345678](telefono)
+    - [9997654321](telefono)
+    - [4611234567](telefono)
+    - [6869876543](telefono)
+    - [2282345678](telefono)
+    - [2467654321](telefono)
+    - [9382345678](telefono)
+    - [6671234567](telefono)
+    - [3149876543](telefono)
+    - [9817654321](telefono)
+    - [2299876543](telefono)
+    - [4731234567](telefono)
+    - [5529876543](telefono)
+    - [5552345678](telefono)
+    - [7777654321](telefono)
+    - [9519876543](telefono)
+    - [9991234567](telefono)
+    - [6642345678](telefono)
+    - [8689876543](telefono)
+    - [9931234567](telefono)
+    - [4499876543](telefono)
+    - [6257654321](telefono)
+    - [3539876543](telefono)
+    - [9812345678](telefono)
+    - [8719876543](telefono)
+    - [6121234567](telefono)
+    - [4737654321](telefono)
+    - [4449876543](telefono)
+    - [2227654321](telefono)
+    - [2469876543](telefono)
+    - [8331234567](telefono)
+    - [4619876543](telefono)
+    - [7717654321](telefono)
+    - [6561234567](telefono)
+    - [3229876543](telefono)
+    - [6677654321](telefono)
+    - [4629876543](telefono)
+    - [7441234567](telefono)
+    - [3417654321](telefono)
+    - [6861234567](telefono)
+    - [2287654321](telefono)
+    - [2461234567](telefono)
+    - [9389876543](telefono)
+    - [6147654321](telefono)
+    - [3221234567](telefono)

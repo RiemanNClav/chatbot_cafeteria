@@ -2,12 +2,43 @@ version: "3.1"
 
 rules:
 
-- rule: Say goodbye anytime the user says goodbye
+- rule: regla_inicio
   steps:
-  - intent: goodbye
-  - action: utter_goodbye
+  - intent: intent_inicio
+  - action: utter_inicio_panel
 
-- rule: Say 'I am a bot' anytime the user challenges
+- rule: regla_menu
   steps:
-  - intent: bot_challenge
-  - action: utter_iamabot
+  - intent: intent_menu
+  - action: utter_ver_menu
+
+
+- rule: regla_horario
+  steps:
+  - intent: intent_horario
+  - action: action_get_horario
+
+- rule: regla_forma_pago
+  steps:
+  - intent: intent_forma_pago
+  - action: utter_forma_pago
+
+
+- rule: regla_numero
+  steps:
+  - intent: intent_registro_numero_registro
+  - action: action_save_data
+
+- rule: regla_acotar_telefono
+  steps:
+  - intent: intent_pedido
+  - action: action_validar_telefono
+
+
+- rule: regla_registro_telefono
+  steps:
+  - intent: intent_registro_telefono
+  - action: action_registro_telefono
+
+
+  

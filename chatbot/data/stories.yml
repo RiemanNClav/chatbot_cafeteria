@@ -2,29 +2,273 @@ version: "3.1"
 
 stories:
 
-- story: happy path
+- story: historia menu_pedido
   steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: mood_great
-  - action: utter_happy
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
 
-- story: sad path 1
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
+    - intent: intent_menu
+    - action: utter_ver_menu
 
-- story: sad path 2
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+  ## 3 OPCIONES
+- story: historia menu_horarios_pedido
   steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - intent: deny
-  - action: utter_goodbye
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_menu
+    - action: utter_ver_menu
+
+    - intent: intent_horario
+    - action: action_get_horario
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+- story: historia menu_atencion_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_menu
+    - action: utter_ver_menu
+
+    - intent: intent_forma_pago
+    - action: utter_forma_pago
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+- story: historia horarios_menu_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+
+    - intent: intent_horario
+    - action: action_get_horario
+
+    - intent: intent_menu
+    - action: utter_ver_menu
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+- story: historia horarios_atencion_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_horario
+    - action: action_get_horario
+
+    - intent: intent_forma_pago
+    - action: utter_forma_pago
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+- story: historia atencion_menu_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_forma_pago
+    - action: utter_forma_pago
+
+    - intent: intent_menu
+    - action: utter_ver_menu
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+- story: historia atencion_horarios_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_forma_pago
+    - action: utter_forma_pago
+
+    - intent: intent_horario
+    - action: action_get_horario
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+  ## 4 OPCIONES
+- story: historia menu_horarios_atencion_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_menu
+    - action: utter_ver_menu
+
+    - intent: intent_horario
+    - action: action_get_horario
+
+    - intent: intent_forma_pago
+    - action: utter_forma_pago
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+- story: historia menu_atencion_horarios_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_menu
+    - action: utter_ver_menu
+
+    - intent: intent_forma_pago
+    - action: utter_forma_pago
+
+    - intent: intent_horario
+    - action: action_get_horario
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+            # 1. ver menu\n
+            # 2. hacer pedido\n 
+            # 3. ver horarios\n 
+            # 4. forma de pago\n
+
+
+- story: historia horarios_menu_atencion_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_horario
+    - action: action_get_horario
+
+    - intent: intent_menu
+    - action: utter_ver_menu
+
+    - intent: intent_forma_pago
+    - action: utter_forma_pago
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
+
+
+- story: historia horarios_atencion_menu_pedido
+  steps:
+    - intent: intent_inicio
+    #- action: action_save_phone_number
+    - action: utter_inicio_panel
+    - intent: intent_horario
+    - action: action_get_horario
+
+    - intent: intent_forma_pago
+    - action: utter_forma_pago
+
+    - intent: intent_menu
+    - action: utter_ver_menu
+
+    - intent: intent_pedido
+    - action: action_validar_telefono
+    - intent: intent_registro_telefono
+      entities:
+        - telefono
+    - action: action_registro_telefono
+    - intent: intent_registro_numero_registro
+      entities:
+        - numero
+    - action: action_save_data
