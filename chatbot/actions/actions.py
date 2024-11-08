@@ -192,7 +192,7 @@ class ActionGetPedido(Action):
     def request(self, id_registro_venta, token_sesion):
                                     
             # Enviar el token y el teléfono a Flask
-            url = 'https://5810-2806-2a0-1220-8638-c79-7747-3bd9-a733.ngrok-free.app/guardar_token'
+            url = 'https://f538-2806-2a0-1220-8638-c79-7747-3bd9-a733.ngrok-free.app/guardar_token'
 
             data = {
                 "id_registro_venta": id_registro_venta,
@@ -309,7 +309,24 @@ class ActionSaveData(Action):
                 response += f"(si quieres ver el seguimiento, escribe 'seguimiento pedido')"
                 response += f"\n"
 
-                ## aqui enviamos y corroboramos que el cliente ya este en la base de datos, sino esta, enviarlo. 
+                clientes = sheets["clientes"]
+                clase_insert_data = InsertData(clientes)
+
+                data = clientes.get_all_records()
+                df = pd.DataFrame(data)
+                numero_clientes = list(df.telefono.unique())
+
+                if telefono not in numero_clientes:
+                    correo_electronico = tracker.get_slot("correo")
+                    nombre_ = nombre
+                    telefono_ = telefono
+                    correo = correo_electronico
+                    procedencia_ = procedencia
+
+                    values = [nombre_, telefono_, correo, procedencia_]
+                    clase_insert_data.insert_data(values)
+                else:
+                    pass
 
             else:
                 response = "No se ha podido encontrar tu pedido, porfavor vuelve a crear un link, escribiendo 'hacer pedido'"
@@ -322,26 +339,3 @@ class ActionSaveData(Action):
         dispatcher.utter_message(text=response)
         return []
     
-
-# ------------------------------------------------------------GUARDAR EL NUMERO DE TELEFONO----------------------------------------------------
-
-# class ActionSavePhoneNumber(Action):
-
-#     def name(self):
-#         return "action_save_phone_number"
-
-#     def run(self, dispatcher, tracker, domain):
-#         # Obtén el número de teléfono del remitente desde los metadatos del mensaje
-#         phone_number = tracker.latest_message.get('from')  # Alternativa: puedes revisar tracker.latest_message['metadata'] para Twilio
-
-#         if not phone_number:
-#             # En caso de que no se pueda obtener, tal vez usar un mensaje de error
-#             dispatcher.utter_message(text="No pude obtener el número de teléfono.")
-#             return []
-        
-#         dispatcher.utter_message(text=f"Tu numero de telefono es {phone_number}")
-#         return [SlotSet("phone_number", phone_number)]
-
-# if __name__=="__main__":
-#     h = ActionGetPedido()
-#     h.prueba()
