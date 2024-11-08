@@ -8,11 +8,13 @@ intents:
   - intent_forma_pago
   - intent_registro_numero_registro
   - intent_registro_telefono
+  - intent_registro_correo_electronico
 
 
 entities:
   - numero
   - telefono
+  - correo
 
 slots:
 
@@ -33,6 +35,14 @@ slots:
     type: text
     mappings:
       - type: custom
+
+  correo:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: correo
+
 
 
 responses:
@@ -69,6 +79,9 @@ responses:
              - Efectivo (paga cuando te entreguen tus alimentos)\n
              - Pagos con tarjeta (te cobramos en el momento)\n
              Realiza tu pedido escribiendo 'hacer pedido', de lo contrario consulta otra opción del panel."
+
+  utter_registro_correo_electronico:
+  - text: "Por último, ingresa también tu *CORREO ELECTRONICO*: "
 
 actions:
   # - action_get_registro_pedido: {send_domain: True}
