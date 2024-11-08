@@ -16,6 +16,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -40,6 +46,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -63,6 +75,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -87,6 +105,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -110,6 +134,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -133,6 +163,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -156,6 +192,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -183,6 +225,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -209,6 +257,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -241,6 +295,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:
@@ -267,6 +327,12 @@ stories:
     - intent: intent_registro_telefono
       entities:
         - telefono
+    
+    - action: utter_registro_correo_electronico
+    - intent: intent_registro_correo_electronico
+      entities:
+        - correo
+  
     - action: action_registro_telefono
     - intent: intent_registro_numero_registro
       entities:

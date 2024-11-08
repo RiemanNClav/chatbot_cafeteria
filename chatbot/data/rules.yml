@@ -38,7 +38,9 @@ rules:
 - rule: regla_registro_telefono
   steps:
   - intent: intent_registro_telefono
+  - action: utter_registro_correo_electronico
+
+- rule: regla_registro_correo
+  steps:
+  - intent: intent_registro_correo_electronico
   - action: action_registro_telefono
-
-
-  
