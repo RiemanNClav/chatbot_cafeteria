@@ -1,33 +1,81 @@
 version: "3.1"
 
 intents:
-  - greet
-  - goodbye
-  - affirm
-  - deny
-  - mood_great
-  - mood_unhappy
-  - bot_challenge
+  - intent_inicio
+  - intent_menu
+  - intent_pedido
+  - intent_horario
+  - intent_forma_pago
+  - intent_registro_numero_registro
+  - intent_registro_telefono
+
+
+entities:
+  - numero
+  - telefono
+
+slots:
+
+  numero:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: numero
+
+  telefono:
+    type: float
+    mappings:
+      - type: from_entity
+        entity: telefono
+
+  id_registro_venta:
+    type: text
+    mappings:
+      - type: custom
+
 
 responses:
-  utter_greet:
-  - text: "Hey! How are you?"
 
-  utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
+  utter_inicio_panel:
+    - text: "Hola, un gusto saludarte, Bienvenido a Tory Cafe, ¿En qué puedo ayudarte?\n
+            Escribe alguna de las siguientes 4 opciones del panel:\n
+            1. ver menú\n
+            2. hacer pedido\n 
+            3. ver horarios\n 
+            4. formas de pago\n
+            (El menú te mostrará disponibilidad en tiempo real)"
 
-  utter_did_that_help:
-  - text: "Did that help you?"
+  utter_ver_horarios:
+    - text: "Los horarios de atención son los siguientes:\n
+             Lunes a Viernes: 9am - 11pm\n
+             Sábado y Domingo: 9am - 6pm\n
+             Realiza tu pedido escribiendo 'hacer pedido', de lo contrario consulta otra opción del panel."
 
-  utter_happy:
-  - text: "Great, carry on!"
+  utter_ver_menu:
+    - text: "Claro, te comparto el siguiente pdf *enviar pdf*\n
+             Realiza tu pedido escribiendo 'hacer pedido', de lo contrario consulta otra opción del panel."
 
-  utter_goodbye:
-  - text: "Bye"
+  utter_registro_nombre:
+    - text: "Perfecto, gracias por tu confianza\n
+             Te comparto brevemente un [link](http://localhost:5056/), por favor llénalo.\n
+             Una vez completado, escribe el NOMBRE que proporcionaste:"
 
-  utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
+  utter_registro_numero_registro:
+    - text: "tambien escribe tu NUMERO DE REGISTRO que se te proporcionó:"
+
+  utter_forma_pago:
+    - text: "Contamos con pagos en:\n
+             - Efectivo (paga cuando te entreguen tus alimentos)\n
+             - Pagos con tarjeta (te cobramos en el momento)\n
+             Realiza tu pedido escribiendo 'hacer pedido', de lo contrario consulta otra opción del panel."
+
+actions:
+  # - action_get_registro_pedido: {send_domain: True}
+  - action_save_data: {send_domain: True}
+  - action_get_horario: {send_domain: True}
+  - action_registro_telefono: {send_domain: True}
+  - action_validar_telefono: {send_domain: True}
 
 session_config:
   session_expiration_time: 60
