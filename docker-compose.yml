@@ -1,0 +1,38 @@
+
+version: '3.8'
+
+services:
+  rasa:
+    build:
+      context: ./chatbot
+      dockerfile: chatbot.dockerfile
+    ports:
+      - "5005:5005" 
+    environment:
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_NUMBER=${TWILIO_NUMBER}
+    volumes:
+      - ./chatbot:/app
+    command: run --enable-api --cors '*' --debug
+
+  rasa-action-server:
+    build:
+      context: ./chatbot
+      dockerfile: actions.dockerfile
+    ports:
+      - "5055:5055"
+    environment:
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_NUMBER=${TWILIO_NUMBER}
+    volumes:
+       - ./chatbot/actions:/app/actions
+    command: ["run", "actions", "--debug"]
+
+  model:
+    build:
+      context: ./registro_ventas
+      dockerfile: model.dockerfile
+    ports:
+      - "5056:5056"
