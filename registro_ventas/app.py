@@ -141,7 +141,7 @@ def guardar_token():
     token_sesion = data.get('token_sesion')
     # token_sesion = "62a483fc-9d2b-4f44-adf8-9bcea9bd0a14"
     # Genera el enlace único con el token
-    enlace = f"https://f538-2806-2a0-1220-8638-c79-7747-3bd9-a733.ngrok-free.app/{token_sesion}"
+    enlace = f"https://8e51410b42a4630d44d62ddc0d82b55a.serveo.net/{token_sesion}"
 
     # Aquí puedes guardar el id_registro_venta y el token_sesion en tu base de datos si es necesario.
     # Ejemplo:

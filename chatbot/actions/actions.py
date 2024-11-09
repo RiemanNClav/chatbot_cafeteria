@@ -192,7 +192,7 @@ class ActionGetPedido(Action):
     def request(self, id_registro_venta, token_sesion):
                                     
             # Enviar el token y el teléfono a Flask
-            url = 'https://f538-2806-2a0-1220-8638-c79-7747-3bd9-a733.ngrok-free.app/guardar_token'
+            url = 'https://8e51410b42a4630d44d62ddc0d82b55a.serveo.net/guardar_token'
 
             data = {
                 "id_registro_venta": id_registro_venta,
