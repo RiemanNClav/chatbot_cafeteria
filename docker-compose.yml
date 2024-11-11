@@ -34,11 +34,11 @@ services:
        - ./chatbot/google_drive:/app/google_drive
     command: ["run", "actions", "--debug"]
 
-  registro_ventas:
-    build:
-      context: ./registro_ventas
-      dockerfile: registro_ventas.dockerfile
-    environment:
-      - APP_BASE_URL=http://localhost:5056
-    ports:
-      - "5056:5056"
+  # registro_ventas:
+  #   build:
+  #     context: ./registro_ventas
+  #     dockerfile: registro_ventas.dockerfile
+  #   environment:
+  #     - APP_BASE_URL=http://localhost:5056
+  #   ports:
+  #     - "5056:5056"
