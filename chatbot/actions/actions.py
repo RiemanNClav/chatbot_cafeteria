@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 import uuid
 import requests
 import pandas as pd
+import os
 
 
 ##MODULOS
@@ -23,6 +24,8 @@ clase_horarios = Horarios()
 
 sheets = clase_google_drive.obtener_sheets()
 
+APP_BASE_URL = os.getenv('APP_BASE_URL', 'http://localhost:5056')
+
 ## ------------------------------VER HORARIO----------------------------------  ya quedo
 class ActionGetHorario(Action):
 
@@ -30,9 +33,11 @@ class ActionGetHorario(Action):
         return "action_get_horario"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        
+
+        print("ENTRA LA ACCION")
         horario = sheets["horarios"]
         horario_particular = sheets["horario_particular"]
+
 
         diccionario1, diccionario2 = clase_google_drive.preprocesamiento_horarios(horario, horario_particular)
 
@@ -192,7 +197,7 @@ class ActionGetPedido(Action):
     def request(self, id_registro_venta, token_sesion):
                                     
             # Enviar el token y el teléfono a Flask
-            url = 'https://8e51410b42a4630d44d62ddc0d82b55a.serveo.net/guardar_token'
+            url = f"{APP_BASE_URL}/guardar_token"
 
             data = {
                 "id_registro_venta": id_registro_venta,
