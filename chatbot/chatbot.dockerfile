@@ -1,7 +1,5 @@
 FROM rasa/rasa:3.6.20
 
-
-
 COPY . /app
 
 WORKDIR /app

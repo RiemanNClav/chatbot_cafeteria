@@ -9,9 +9,13 @@ RUN pip install -r requirements.txt
 
 
 
-COPY ./src /app/src
+COPY ./google_drive /app/google_drive
 COPY ./actions /app/actions
 COPY entrypoint.sh /app/entrypoint.sh
+COPY endpoints.yml /app/endpoints.yml
+COPY credentials-service-account.json /app/credentials-service-account.json
+
+RUN chmod 644 /app/credentials-service-account.json
 
 RUN chmod +x /app/entrypoint.sh
 

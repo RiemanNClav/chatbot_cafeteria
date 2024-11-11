@@ -1,0 +1,8 @@
+.dockerignore
+.gitignore
+tests
+.rasa
+.config
+.keras
+.rasa
+credentials-service-account.json
