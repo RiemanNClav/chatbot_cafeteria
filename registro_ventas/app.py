@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, jsonify, url_for
+import os
 
 from preprocesamiento_sheets import GoogleDrive, GoogleSheet, InsertData
 from coordenadas import ApiAddress
@@ -15,6 +16,9 @@ categorias_bebidas = clase_precios.obtener_precios()
 
 app = Flask(__name__)
 app.secret_key = 'mi_clave_secreta_unica_y_segura'
+
+# Obtener la URL base desde una variable de entorno
+APP_BASE_URL = os.getenv('APP_BASE_URL', 'http://localhost:5056')
 
 
 @app.route("/<token>", methods=["GET", "POST"])
@@ -141,7 +145,7 @@ def guardar_token():
     token_sesion = data.get('token_sesion')
     # token_sesion = "62a483fc-9d2b-4f44-adf8-9bcea9bd0a14"
     # Genera el enlace único con el token
-    enlace = f"https://8e51410b42a4630d44d62ddc0d82b55a.serveo.net/{token_sesion}"
+    enlace = f"{APP_BASE_URL}/{token_sesion}"
 
     # Aquí puedes guardar el id_registro_venta y el token_sesion en tu base de datos si es necesario.
     # Ejemplo:

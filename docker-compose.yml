@@ -2,7 +2,8 @@
 version: '3.8'
 
 services:
-  rasa:
+
+  rasa-run-server:
     build:
       context: ./chatbot
       dockerfile: chatbot.dockerfile
@@ -12,6 +13,7 @@ services:
       - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
       - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
       - TWILIO_NUMBER=${TWILIO_NUMBER}
+      - APP_BASE_URL=http://localhost:5056
     volumes:
       - ./chatbot:/app
     command: run --enable-api --cors '*' --debug
@@ -26,13 +28,17 @@ services:
       - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
       - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
       - TWILIO_NUMBER=${TWILIO_NUMBER}
+      - APP_BASE_URL=http://localhost:5056
     volumes:
        - ./chatbot/actions:/app/actions
+       - ./chatbot/google_drive:/app/google_drive
     command: ["run", "actions", "--debug"]
 
-  model:
+  registro_ventas:
     build:
       context: ./registro_ventas
-      dockerfile: model.dockerfile
+      dockerfile: registro_ventas.dockerfile
+    environment:
+      - APP_BASE_URL=http://localhost:5056
     ports:
       - "5056:5056"

@@ -2,12 +2,28 @@ import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
 
+import json
+import boto3
+
+def get_google_credentials_from_secrets():
+    # Configuración de AWS Secrets Manager
+    client = boto3.client('secretsmanager', region_name='us-east-2')  # Ajusta la región
+    secret_name = 'credentials-service-account'
+
+    # Obtener las credenciales del Secret Manager
+    response = client.get_secret_value(SecretId=secret_name)
+    secret = response['SecretString']
+    credentials_info = json.loads(secret)
+
+    return credentials_info
+
+
 class GoogleDrive:
     def __init__(self):
         pass
 
     def access(self):
-        ruta_credenciales = "credentials-service-account.json"   
+        ruta_credenciales = get_google_credentials_from_secrets()
         scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
 
         return ruta_credenciales, scopes
