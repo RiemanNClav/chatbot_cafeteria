@@ -1,18 +1,36 @@
 import pandas as pd
 import uuid
+import os
 
 import gspread
 from google.oauth2.service_account import Credentials
+from google.oauth2 import service_account
+
+import boto3
+import json
+
+def get_google_credentials_from_secrets():
+    # Configuración de AWS Secrets Manager
+    client = boto3.client('secretsmanager', region_name='us-east-2')  # Ajusta la región
+    secret_name = 'credentials-service-account'
+
+    # Obtener las credenciales del Secret Manager
+    response = client.get_secret_value(SecretId=secret_name)
+    secret = response['SecretString']
+    credentials_info = json.loads(secret)
+
+    return credentials_info
+
 
 class GoogleDrive:
     def __init__(self):
         pass
 
     def access(self):
-        ruta_credenciales = "google_drive/credentials-service-account.json"   
+        credentials_path = get_google_credentials_from_secrets()
         scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
 
-        return ruta_credenciales, scopes
+        return credentials_path, scopes
     
     def obtener_sheets(self):
         ruta_credenciales, scopes = self.access()
@@ -118,6 +136,7 @@ class GoogleSheet:
 
 class InsertData:
     def __init__(self, sheet_name):
+
         self.sheet = sheet_name
 
     def insert_data(self, values):
@@ -130,9 +149,13 @@ class InsertData:
 
 
 if __name__=="__main__":
+    clase_google_drive = GoogleDrive()
+    sheets = clase_google_drive.obtener_sheets()
+    registro_ventas = sheets["registro_ventas"]
+
     values = ["1", "2", "token", "numero_registro", 
                 " ", "telefono", " ", "fecha_registro", 
                 "hora_registro", " ", 1, " ", " ", " ", " ", " "]
         
-    clase_insert_data = InsertData("registro_ventas")
+    clase_insert_data = InsertData(registro_ventas)
     clase_insert_data.insert_data(values)
