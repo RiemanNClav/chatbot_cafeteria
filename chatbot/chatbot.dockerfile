@@ -8,6 +8,7 @@ USER root
 
 
 COPY chatbot/requirements.txt /app/requirements.txt
+COPY chatbot/models /app/models
 RUN pip install -r requirements.txt
 COPY chatbot/entrypoint.runserver.sh /app/entrypoint.runserver.sh
 
