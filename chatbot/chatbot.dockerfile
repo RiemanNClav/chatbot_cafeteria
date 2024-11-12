@@ -7,7 +7,7 @@ WORKDIR /app
 USER root
 
 
-COPY requirements.txt /app/requirements.txt
+COPY chatbot/requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
 
