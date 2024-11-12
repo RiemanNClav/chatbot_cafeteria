@@ -11,8 +11,8 @@ RUN pip install -r requirements.txt
 
 COPY ./google_drive /app/google_drive
 COPY ./actions /app/actions
-COPY entrypoint.sh /app/entrypoint.sh
-COPY endpoints.yml /app/endpoints.yml
+COPY chatbot/entrypoint.sh /app/entrypoint.sh
+COPY chatbot/endpoints.yml /app/endpoints.yml
 
 
 RUN chmod +x /app/entrypoint.sh
