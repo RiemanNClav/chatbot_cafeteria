@@ -50,7 +50,7 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
         run: |
           # Construir las imágenes usando docker-compose
-          docker-compose -f serving.docker-compose.yml build
+          docker-compose -f docker-compose.yml build
 
           # Etiquetar y subir cada imagen a ECR
           docker tag rasa-run-server:latest $ECR_REGISTRY/$ECR_REPOSITORY/rasa:latest
