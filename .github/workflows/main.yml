@@ -19,17 +19,23 @@ jobs:
 
       - name: Run unit tests
         run: echo "Running unit tests"
-      - name: Install Docker and Docker Compose
+      - name: Install Docker
         run: |
-          # Descargar e instalar Docker usando el script oficial
           curl -fsSL https://get.docker.com -o get-docker.sh
           sudo sh get-docker.sh
+          sudo usermod -aG docker $USER
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          docker --version
 
-          # Instalar Docker Compose manualmente
+      - name: Install Docker Compose
+        run: |
+          # Descargar e instalar Docker Compose
           sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
+          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
           docker-compose --version
-
+          
   build-and-push-ecr-image:
     name: Continuous Delivery
     needs: integration
