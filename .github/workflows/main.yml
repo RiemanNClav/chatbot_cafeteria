@@ -32,7 +32,7 @@ jobs:
 
   build-and-push-ecr-image:
     name: Continuous Delivery
-    needs: integrations
+    needs: integration
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
