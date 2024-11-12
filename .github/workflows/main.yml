@@ -44,6 +44,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      # Build and push Rasa server image
       - name: Build Rasa Run Server Image
         id: build-image
         env:
@@ -55,9 +56,17 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f chatbot/actions.dockerfile .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      # Build and push Rasa Actions server image
+      - name: Build Rasa Actions Server Image
+        id: build-actions-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ACTIONS_REPOSITORY: ${{ secrets.ACTIONS_ECR_REPOSITORY }}
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $ECR_REGISTRY/$ACTIONS_REPOSITORY:$IMAGE_TAG -f chatbot/actions.dockerfile .
+          docker push $ECR_REGISTRY/$ACTIONS_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ACTIONS_REPOSITORY:$IMAGE_TAG"
 
 
   continuous-deployment:
@@ -83,18 +92,25 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Pull latest images
+      # Pull the latest images
+      - name: Pull latest Rasa Server image
         run: |
-          docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
           docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      - name: Run Docker Containers
+      - name: Pull latest Rasa Actions Server image
         run: |
-          TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }} \
-          TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }} \
-          TWILIO_NUMBER=${{ secrets.TWILIO_NUMBER }} \
+          docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ACTIONS_ECR_REPOSITORY }}:latest
+
+      # Run Docker containers
+      - name: Run Rasa Server Container
+        run: |
           docker run -d -p 5005:5005 --name=rasa-run-server -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
-          docker run -d -p 5055:5055 --name=rasa-run-action-server -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
+
+      - name: Run Rasa Actions Server Container
+        run: |
+          docker run -d -p 5055:5055 --name=rasa-run-action-server -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ACTIONS_ECR_REPOSITORY  }}:latest
+
+
       - name: Clean previous images and containers
         run: |
           docker system prune -f
