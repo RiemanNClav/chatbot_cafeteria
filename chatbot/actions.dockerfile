@@ -9,8 +9,8 @@ RUN pip install -r requirements.txt
 
 
 
-COPY ./google_drive /app/google_drive
-COPY ./actions /app/actions
+COPY chatbot/google_drive /app/google_drive
+COPY chatbot/actions /app/actions
 COPY chatbot/entrypoint.sh /app/entrypoint.sh
 COPY chatbot/endpoints.yml /app/endpoints.yml
 
