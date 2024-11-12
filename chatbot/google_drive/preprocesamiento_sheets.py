@@ -8,18 +8,26 @@ from google.oauth2 import service_account
 
 import boto3
 import json
+import tempfile
+
+
 
 def get_google_credentials_from_secrets():
     # Configuración de AWS Secrets Manager
     client = boto3.client('secretsmanager', region_name='us-east-2')  # Ajusta la región
-    secret_name = 'credentials-service-account'
+    secret_name = 'credentials-service-account'  # ARN del secreto exacto
 
     # Obtener las credenciales del Secret Manager
     response = client.get_secret_value(SecretId=secret_name)
     secret = response['SecretString']
     credentials_info = json.loads(secret)
 
-    return credentials_info
+    # Crear un archivo temporal con las credenciales de Google
+    with tempfile.NamedTemporaryFile(delete=False, mode='w', encoding='utf-8') as temp_file:
+        json.dump(credentials_info, temp_file)
+        temp_file_path = temp_file.name  # Ruta del archivo temporal
+
+    return temp_file_path
 
 
 class GoogleDrive:
@@ -27,17 +35,20 @@ class GoogleDrive:
         pass
 
     def access(self):
+        # Obtener la ruta del archivo temporal con las credenciales y los scopes necesarios
         credentials_path = get_google_credentials_from_secrets()
         scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-
         return credentials_path, scopes
     
     def obtener_sheets(self):
+        # Obtener la ruta de las credenciales y los scopes
         ruta_credenciales, scopes = self.access()
 
-        credenciales = Credentials.from_service_account_file(ruta_credenciales, scopes=scopes)
+        # Usar las credenciales para autorizar la API de Google Sheets
+        credenciales = service_account.Credentials.from_service_account_file(ruta_credenciales, scopes=scopes)
         cliente = gspread.authorize(credenciales)
         
+        # Obtener las hojas de cálculo de Google Sheets
         base_datos = cliente.open("base_datos_tory_cafe")
         sheets = {
             "registro_ventas": base_datos.get_worksheet(0),
@@ -153,9 +164,9 @@ if __name__=="__main__":
     sheets = clase_google_drive.obtener_sheets()
     registro_ventas = sheets["registro_ventas"]
 
-    values = ["1", "2", "token", "numero_registro", 
-                " ", "telefono", " ", "fecha_registro", 
-                "hora_registro", " ", 1, " ", " ", " ", " ", " "]
+    values = ["id_registro_venta", "id_cliente", "token", "numero_registro", 
+                "nombre", "telefono", "direccion", "fecha_registro", 
+                "hora_registro", "0", 1, " 0", "0 ", " 0", " 0", "0 "]
         
     clase_insert_data = InsertData(registro_ventas)
     clase_insert_data.insert_data(values)
