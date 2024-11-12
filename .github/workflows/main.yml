@@ -19,23 +19,7 @@ jobs:
 
       - name: Run unit tests
         run: echo "Running unit tests"
-      - name: Install Docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-          sudo usermod -aG docker $USER
-          sudo systemctl start docker
-          sudo systemctl enable docker
-          docker --version
 
-      - name: Install Docker Compose
-        run: |
-          # Descargar e instalar Docker Compose
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-          docker-compose --version
-          
   build-and-push-ecr-image:
     name: Continuous Delivery
     needs: integration
@@ -60,21 +44,17 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+      - name: Build Rasa Run Server Image
         run: |
-          # Construir las imágenes usando docker-compose
-          docker-compose -f docker-compose.yml build
+          docker build -t rasa-run-server:latest -f chatbot/chatbot.dockerfile .
+          docker tag rasa-run-server:latest ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa:latest
 
-          # Etiquetar y subir cada imagen a ECR
-          docker tag rasa-run-server:latest $ECR_REGISTRY/$ECR_REPOSITORY/rasa:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY/rasa:latest
-
-          docker tag rasa-action-server:latest $ECR_REGISTRY/$ECR_REPOSITORY/rasa-action-server:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY/rasa-action-server:latest
+      - name: Build Rasa Action Server Image
+        run: |
+          docker build -t rasa-action-server:latest -f chatbot/actions.dockerfile .
+          docker tag rasa-action-server:latest ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa-action-server:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa-action-server:latest
 
 
   continuous-deployment:
@@ -102,18 +82,11 @@ jobs:
 
       - name: Pull latest images
         run: |
-          # Pull each image from ECR
-          docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa:latest
-          docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa-action-server:latest
-
-      # - name: Stop and remove existing containers
-      #   run: |
-      #     # Detener y eliminar contenedores existentes
-      #     docker-compose -f serving.docker-compose.yml down || true
+          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa:latest
+          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa-action-server:latest
 
       - name: Run Docker Containers
         run: |
-          # Iniciar nuevos contenedores usando Docker Compose con Twilio y Google credentials
           TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }} \
           TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }} \
           TWILIO_NUMBER=${{ secrets.TWILIO_NUMBER }} \
