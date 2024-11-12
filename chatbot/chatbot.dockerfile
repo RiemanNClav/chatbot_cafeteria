@@ -1,11 +1,15 @@
 FROM rasa/rasa:3.6.20
 
-COPY . /app
 
 WORKDIR /app
 
 USER root
 
+COPY chatbot/credentials.yml /app/credentials.yml
+COPY chatbot/config.yml /app/config.yml
+COPY chatbot/domain.yml /app/domain.yml
+COPY chatbot/endpoints.yml /app/endpoints.yml
+COPY chatbot/data /app/data
 
 COPY chatbot/requirements.txt /app/requirements.txt
 COPY chatbot/models /app/models
