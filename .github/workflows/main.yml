@@ -45,16 +45,20 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build Rasa Run Server Image
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+          IMAGE_TAG: latest
         run: |
-          docker build -t rasa-run-server:latest -f chatbot/chatbot.dockerfile .
-          docker tag rasa-run-server:latest ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa:latest
-          docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa:latest
+          docker build -t t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f chatbot/chatbot.dockerfile .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Build Rasa Action Server Image
         run: |
-          docker build -t rasa-action-server:latest -f chatbot/actions.dockerfile .
-          docker tag rasa-action-server:latest ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa-action-server:latest
-          docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}/rasa-action-server:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f chatbot/actions.dockerfile .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
 
   continuous-deployment:
