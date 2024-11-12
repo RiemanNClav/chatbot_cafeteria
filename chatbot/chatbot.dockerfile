@@ -5,11 +5,6 @@ WORKDIR /app
 
 USER root
 
-# Definir variables de entorno
-ENV TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
-ENV TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
-ENV TWILIO_NUMBER=${TWILIO_NUMBER}
-
 COPY chatbot/credentials.yml /app/credentials.yml
 COPY chatbot/config.yml /app/config.yml
 COPY chatbot/domain.yml /app/domain.yml
