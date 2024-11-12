@@ -9,10 +9,13 @@ USER root
 
 COPY chatbot/requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
+COPY chatbot/entrypoint.runserver.sh /app/entrypoint.runserver.sh
 
 
 EXPOSE 5005
 
 # RUN rasa train
 
-CMD ["rasa", "run", "--enable-api", "--cors", "*", "--debug"]
+RUN chmod +x /app/entrypoint.runserver.sh
+
+ENTRYPOINT ["/app/entrypoint.runserver.sh"]
