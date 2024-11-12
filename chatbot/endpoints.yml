@@ -11,7 +11,7 @@
 # https://rasa.com/docs/rasa/custom-actions
 
 action_endpoint:
-  url: "http://localhost:5055/webhook"
+  url: "http://rasa-run-action-server:5055/webhook"
 
 webhook:
   url: "http://localhost:5005/webhooks/twilio/webhook"
