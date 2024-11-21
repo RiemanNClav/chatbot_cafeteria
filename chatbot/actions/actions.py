@@ -16,6 +16,7 @@ import os
 ##---------------------------------------------------##
 from google_drive.preprocesamiento_sheets import GoogleDrive, GoogleSheet, InsertData
 from google_drive.horarios import Horarios
+from mensajes_automatizados.mensajes import MensajesAutomatizados
 ##---------------------------------------------------##
 
 clase_google_drive = GoogleDrive()
@@ -24,7 +25,6 @@ clase_horarios = Horarios()
 
 sheets = clase_google_drive.obtener_sheets()
 
-APP_BASE_URL = os.getenv('APP_BASE_URL', 'http://localhost:5056')
 
 ## ------------------------------VER HORARIO----------------------------------  ya quedo
 class ActionGetHorario(Action):
@@ -65,44 +65,12 @@ class ActionGetHorario(Action):
         dispatcher.utter_message(text=response)
 
         return []    
-## -----------------------------------ACOTAR UBICACION------------------------------------------
 
-# class ActionGetAcotarUbicacion(Action):
-
-#     def name(self) -> Text:
-#         return "action_acotar_ubicacion"
-    
-
-#     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        
-#         api = GoogleDrive()
-#         dicc = api.action_acotar_ubicacion()
-#         botton = dicc["botton"]
-#         botton2 = dicc["botton2"]
-#         dia = dicc["dia"]
-
-#         if botton == 1:
-#             disponiblidad = 'Si tenemos servicio!!\n'
-#             disponiblidad += "Perfecto, gracias por tu confianza\n"
-#             disponiblidad += "\n"
-#             disponiblidad += "Antes de comenzar, queremos validar tu *DIRECCION*, ingresala manualmente:\n"
-
-#         else:
-#             if botton2 == 1:
-#                 disponiblidad = f"Aun no tenemos servicio,  te recordamos que nuestro horario es de {dia}, gracias"
-#             elif botton2 == 2:
-#                 disponiblidad = f"Lo siento, ya hemos cerrado, te recordamos que nuestro servicio fue de {dia}, gracias"
-
-
-#         dispatcher.utter_message(text=disponiblidad)
-
-#         return [] 
-    
 ## ---------------------------------------------VALIDAR TELEFONO--------------------------------------------------------
-class ActionGetAcotarUbicacion(Action):
+class ActionValidarPreferencia(Action):
 
     def name(self) -> Text:
-        return "action_validar_telefono"
+        return "action_validar_preferencia"
     
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
@@ -121,8 +89,8 @@ class ActionGetAcotarUbicacion(Action):
             disponiblidad = 'Si tenemos servicio!!\n'
             disponiblidad += "Perfecto, gracias por tu confianza\n"
             disponiblidad += "\n"
-            disponiblidad += "Antes de comenzar, queremos validar tu *NUMERO DE TELEFONO*, ingresalo porfavor:\n"
-
+            disponiblidad += "¿Quieres programar tu pedido para una hora en particular o pedirlo para entrega inmediata?\n"
+            disponiblidad += "Escribe *Programar* o *Inmediato*"
         else:
             if botton2 == 1:
                 disponiblidad = f"Aun no tenemos servicio,  te recordamos que nuestro horario es de {dia}, gracias"
@@ -132,47 +100,80 @@ class ActionGetAcotarUbicacion(Action):
 
         dispatcher.utter_message(text=disponiblidad)
 
-        return [] 
-
-
-## --------------------------------------------HACER PEDIDO-----------------------------------------------------
-
-# class ActionGetPedido(Action):
-
-#     def name(self) -> Text:
-#         return "action_registro_nombre"
+        return [SlotSet("programar", None), SlotSet("inmediato", None), SlotSet("telefono", None),  SlotSet("correo", None) ,SlotSet("hora", None)]
     
 
-#     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-#         api = ApiAddress()
-#         direccion = tracker.get_slot("direccion")
-
-#         try:
-#             result, radio, distancia = api.bola_cerrada(direccion)
-#             print(f"radio: {radio}")
-#             print('------------------')
-#             print(f"distancia: {distancia}")
-#             if result == 1:
-#                 response = "Increible, Si tenemos cobertura hasta tu direción!!"
-#                 response += "\n"
-#                 response += "Te comparto brevemente un [link](https://elevenlabs.io/app/speech-synthesis), por favor llénalo.\n"
-#                 response += "Una vez completado, escribe el NUMERO DE REGISTRO que se te proporcionó:"
-#             else:
-#                 response = "Lo siento, pero nuestros repartidores locales no llegan hasta tu ubicación :(\n"
-#                 response += "te invito a que hagas tu pedido por uber eats, te comparto brevemente un link, *enviar link*"
-#         except:
-#             response = "Lo siento, no hemos podido encontrar tu dirección, vuelve a escribirla porfavor\n"
-
-#         dispatcher.utter_message(text=response)
-
-#         return [] 
-    
-## ----------------------------------------------------HACER PEDIDO 2--------------------------------------------
-class ActionGetPedido(Action):
+class ActionProgramarPedido(Action):
 
     def name(self) -> Text:
-        return "action_registro_telefono"
+        return "action_programar_pedido"
+    
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        disponiblidad = "Increíble, especifica la hora, utilizando el siguiente formato.\n"
+        disponiblidad += "Ej. Horarios antes de las 12pm: 10:30, 11:15, ... \n"
+        disponiblidad += "Ej. Horarios antes de las 12pm: 10:30, 11:15, ... \n"
+
+
+        dispatcher.utter_message(text=disponiblidad)
+
+        return [SlotSet("inmediato", None)]
+
+
+## --------------------------------------------MODALIDAD DEL PEDIDO-----------------------------------------------------
+
+
+class ActionRegistroCorreoElectronico(Action):
+
+    def name(self) -> Text:
+        return "action_registro_correo_electronico"
+    
+    
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        recoger_enviar = tracker.get_slot("recoger_enviar")
+        telefono = tracker.get_slot("telefono")
+
+        if ("env"  in recoger_enviar.lower()) or ("ust" in recoger_enviar.lower()) :
+            preferencia_pedido = 'enviar'
+
+        
+        else:
+            preferencia_pedido = "recoger"
+
+        clientes = sheets["clientes"]
+        data = clientes.get_all_records()
+        df = pd.DataFrame(data)[["telefono", "correo", "nombre"]]
+        df["telefono"] = df["telefono"].astype("str")
+        df = df[ (df["telefono"] == telefono) ]
+
+        if len(df) != 0:
+            nombre = df['nombre'].iloc[0] if not df.empty else None
+            correo = df['correo'].iloc[0] if not df.empty else None
+            disponiblidad = f"{nombre}, un gusto volver a saber de ti, gracias por seguir confiando en nososotros\n"
+            disponiblidad += f"te pido porfavor que escribas *Link*, para poderte enviar nuestro link de registros."
+            validar_correo = correo
+            nombre_validar = True
+
+
+        else:
+            disponiblidad = f"Correcto, ya por ultimo ingresa también tu *Correo Electrónico*"
+            validar_correo = None
+            nombre_validar = False
+
+        dispatcher.utter_message(text=disponiblidad)
+
+        return [SlotSet("validar_correo", validar_correo), SlotSet("preferencia_pedido", preferencia_pedido), SlotSet("nombre_validar", nombre_validar)]
+    
+
+    
+
+## ----------------------------------------------------HACER PEDIDO 2--------------------------------------------
+class ActionRegistroLink(Action):
+
+    def name(self) -> Text:
+        return "action_registro_link"
     
     def fecha_actual(self):
 
@@ -194,64 +195,95 @@ class ActionGetPedido(Action):
         id_uuid = str(uuid.uuid5(uuid.NAMESPACE_DNS, numero_str))
         return id_uuid
     
-    def request(self, id_registro_venta, token_sesion):
-                                    
-            # Enviar el token y el teléfono a Flask
-            url = f"{APP_BASE_URL}/guardar_token"
+    def request_enviar(self, id_registro_venta, token_sesion):
+        url = "http://registro-ventas:5056/guardar_token"
+        data = {
+            "id_registro_venta": id_registro_venta,
+            "token_sesion": token_sesion
+        }
 
-            data = {
-                "id_registro_venta": id_registro_venta,
-                "token_sesion": token_sesion
-            }
-
-            response = requests.post(url, json=data)
-            if response.status_code == 200:
-                print('se ha enviado')
+        try:
+            response = requests.post(url, json=data, timeout=10)  # Añade un timeout para evitar bloqueos
+            response.raise_for_status()  # Levanta una excepción si el status no es 2xx
+            print('Se ha enviado request enviar')
+            
+            # Asegúrate de que la respuesta contenga la clave 'enlace'
+            if 'enlace' in response.json():
                 return response.json()['enlace']
             else:
-                print("No se envio")
+                print("La respuesta no contiene el enlace")
+                return None
+        except requests.exceptions.RequestException as e:
+            print(f"Error al enviar el request: {e}")
+            return None
 
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
+        
+        programar = tracker.get_slot("programar")
+        inmediato = tracker.get_slot("inmediato")
+        
+        filtro_seguridad1 = True
+        if programar == None and inmediato == None:
+            filtro_seguridad1 = False
+        
+        recoger_enviar = tracker.get_slot("recoger_enviar")
         telefono = tracker.get_slot("telefono")
-        token = str(uuid.uuid4())
-        numero_registro = self.numeros_aleatorios()
-        fecha_registro, hora_registro = self.fecha_actual()
+        correo = tracker.get_slot("correo")
 
-        id_registro_venta = str(numero_registro) + "-" + telefono[-4:] + '-' + str(hora_registro).replace('.', '')
-        id_cliente = self.convertir_telefono_id(telefono)
+        filtro_seguridad2 = True
+        if (recoger_enviar == None)  or (telefono == None) or  (correo == None):
+            filtro_seguridad2 = False
 
-        values = [id_registro_venta, id_cliente, token, numero_registro, 
-                " ", telefono, " ", fecha_registro, 
-                hora_registro, " ", 1, " ", " ", " ", " ", " "]
-        
-        registro_ventas = sheets["registro_ventas"]
-        clase_insert_data = InsertData(registro_ventas)
-        clase_insert_data.insert_data(values)
+        if filtro_seguridad2 == True and filtro_seguridad1 == True:
 
-        try:
-            enlace = self.request(id_registro_venta, token)
+            token = str(uuid.uuid4())
+            numero_registro = self.numeros_aleatorios()
+            fecha_registro, hora_registro = self.fecha_actual()
 
-            response = f"Te comparto brevemente un link {enlace}, por favor llénalo.\n"
-            response += "Una vez completado, escribe *registrado*, asi podremos confirmarlo."
-            response += "\n"
+            id_registro_venta = str(numero_registro) + "-" + telefono[-4:] + '-' + str(hora_registro).replace('.', '')
+            id_cliente = self.convertir_telefono_id(telefono)
+
+            values = [id_registro_venta, id_cliente, token, numero_registro, 
+                    " ", telefono, " ", fecha_registro, 
+                    hora_registro, " ", 1, " ", " ", " ", " ", " "]
+            
+            registro_ventas = sheets["registro_ventas"]
+            clase_insert_data = InsertData(registro_ventas)
+            clase_insert_data.insert_data(values)
+
+
+            try:
+                enlace = self.request_enviar(id_registro_venta, token)
+                response = f"Ingresa al siguinte enlace {enlace}, por favor llénalo.\n"
+                response += "Una vez completado, escribe *Registrado*, asi podremos confirmarlo."
+                response += "\n"
+                response += f"(Aveces pueden haber errores debido al internet, si llegaste hasta *Confirmar Pedido* y te salió error, con confianza escribre Rregistrado* y nos pondremos en contacto contigo.')"
+
+                dispatcher.utter_message(text=response)
+
+                response = "CONSIDERACIONES"
+                response += "\n"
+                response += "1. El link solo permite un click, si apretaste y saliste sin completar, tendrás que volver a ingresar tu número "
+                response += "\n"
+                response += "2. Si tuviste algun problema accediendo al link, o algo no salio bien, escribe *Problema* "
+                dispatcher.utter_message(text=response)
+
+                validar_enlace = True
+                if enlace == None:
+                    validar_enlace = None
+
+                return [SlotSet("id_registro_venta", id_registro_venta), SlotSet("fecha_registro", fecha_registro), SlotSet("hora_registro", hora_registro), SlotSet("token", token), SlotSet("validar_enlace", validar_enlace)]
+            
+            except Exception as e:
+                print(f"Error en la acción personalizada: {e}")
+                response = "Ha habido un problema, vuelve a ingresar tu número porfavor."
+                dispatcher.utter_message(text=response)
+                return []
+        else:
+            response = "No hemos registrado todos los datos necesarios para tu compra, escribe *Hacer pedido* y registralos porfavor!"
             dispatcher.utter_message(text=response)
-
-            response = "CONSIDERACIONES"
-            response += "\n"
-            response += "1. El link solo permite un click, si apretaste y saliste sin completar, tendrás que volver a ingresar tu número "
-            response += "\n"
-            response += "2. Si tuviste algun problema accediendo al link, o algo no salio bien, escribe *problema* "
-            dispatcher.utter_message(text=response)
-
-            return [SlotSet("id_registro_venta", id_registro_venta)]
-        
-        except:
-            response = "Ha habido un problema, vuelve a ingresar tu número porfavor."
-            dispatcher.utter_message(text=response)
-
-        return []
+            return []
 
 #------------------------------------------------------CONFIRMAR PEDIDO--------------------------------------------
     
@@ -287,60 +319,138 @@ class ActionSaveData(Action):
 
 
         confirmacion = tracker.get_slot("numero")
-
+        telefono = tracker.get_slot("telefono")
         id_registro_venta = tracker.get_slot("id_registro_venta")
 
+        validar_correo = tracker.get_slot("validar_correo")
+        correo = validar_correo
+        if validar_correo == None:
+            correo = tracker.get_slot("correo")
+
+
+        registro_ventas = sheets["registro_ventas"]
+        clase_google_sheet = GoogleSheet(registro_ventas)
+
+        ## PARA UNA SOLUCIÓN MAS PERRA USAR LEVENSHTEIN AQUI
+
         if confirmacion.lower() == "registrado":
-            
-            telefono = tracker.get_slot("telefono")
-            
-            registro_ventas = sheets["registro_ventas"]
+
             hoja1 = registro_ventas
             hoja1 = hoja1.get_all_values()
             df = pd.DataFrame(hoja1[1:], columns=hoja1[0])
 
-            df = df[ (df["telefono"] == telefono) & (df["id_registro_venta"] == id_registro_venta) ][["id_registro_venta", "numero_registro", "nombre", "telefono", "fecha_registro", "hora_registro"]]
-            nombre = df['nombre'].iloc[0] if not df.empty else None
-            clase_google_sheet = GoogleSheet(registro_ventas)
+            try:
+                df = df[ (df["telefono"] == telefono) & (df["id_registro_venta"] == id_registro_venta) ][["id_registro_venta", "numero_registro", "nombre", "telefono", "fecha_registro", "hora_registro"]]
+                nombre = df['nombre'].iloc[0]
+            except:
+                nombre = " "
 
-            if nombre != None:
+            print(f"Nombre: {nombre}")
 
-                procedencia = "Chatbot"
-                clase_google_sheet.update_cell_by_id(id_registro_venta, "hora_confirmacion", self.fecha_actual())
+            validar_enlace = tracker.get_slot("validar_enlace")
+
+            if (validar_enlace == True) and (len(df) == 1) and (nombre != " "):
+
+                fecha_actual = self.fecha_actual()
+                clase_google_sheet.update_cell_by_id(id_registro_venta, "hora_confirmacion", fecha_actual)
                 clase_google_sheet.update_cell_by_id(id_registro_venta, "status_confirmacion", 1)
 
-                response = f"{nombre}, tu pedido ha quedado registrado, espera máxima de 30 min\n"
-                response += f"si no recibes tu pedido antes de las {self.obtener_hora_menos_30_min()}, (siempre y cuando haya sido aceptado)  tu siguiente compra es gratis\n"
-                response += f"(si quieres ver el seguimiento, escribe 'seguimiento pedido')"
+                response = f"{nombre}, tu pedido ha quedado registrado!\n"
+                inmediato = tracker.get_slot("inmediato")
+
+                if inmediato == None:
+                    response += f"Si no recibes tu pedido en un tiempo a lo mas de 30 min después de la hora programada, tu siguente compra es gratis!!"
+                else:
+                    response += f"si no recibes tu pedido antes de las {self.obtener_hora_menos_30_min()}, (siempre y cuando haya sido aceptado)  tu siguiente compra es gratis\n"
                 response += f"\n"
 
+                nombre_ = nombre
+                telefono_ = telefono
+
+                fecha_registro = tracker.get_slot("fecha_registro")
+                hora_registro = tracker.get_slot("hora_registro")
+
+                token_sesion = tracker.get_slot("token")
+
+                registro_bebidas = sheets["registro_bebidas"]
+                data = registro_bebidas.get_all_records()
+                df = pd.DataFrame(data)[["token_sesion", "producto", "categoria", "subcategoria", "tipo_leche", "azucar_extra", "consideraciones", "precio"]]
+                df["token"] = df["token_sesion"].apply(lambda x: x.split('_')[0])
+                filter = df[df["token"] == token_sesion].drop(["token_sesion", "token"], axis=1)
+                ticket_personalizacion = filter.to_dict(orient='records')
+
+
+                FILE_NAME = f"{id_registro_venta}.txt"
+
+
+                preferencia = tracker.get_slot("preferencia_pedido")
+
+                if inmediato == None:
+                    hora= tracker.get_slot("hora")
+                    mensaje_eleccion = f"Quiere su pedido programado para la siguiente hora: {hora}"
+                    if preferencia == "enviar":
+                        mensaje_preferencia = "Quiere se que le envie el pedido para esa hora"
+
+                    else:
+                        mensaje_preferencia = "Pasará a recoger su pedido a esa hora"
+
+                else:
+                    mensaje_eleccion = f"Ordenó su pedido para entrega inmediata"
+                    if preferencia == "enviar":
+                            mensaje_preferencia = "Quiere se que le envie el pedido en cuanto antes"
+                    else: 
+                            mensaje_preferencia = "Quiere recoger su pedido en cuanto antes"
+
+
+
+                ticket_data = {
+                                "id_registro_venta": id_registro_venta,
+                                "Fecha de registro": fecha_registro,
+                                "Hora de registro": hora_registro,
+                                "Hora de confirmación": fecha_actual,
+                                "Nombre": nombre_,
+                                "Correo": correo,
+                                "Elección del cliente": mensaje_eleccion,
+                                "Preferencia del cliente": mensaje_preferencia}
+        
+                
+                clase = MensajesAutomatizados(FILE_NAME)
+                clase.enviar(ticket_data, ticket_personalizacion, nombre, telefono_)
+                nombre_validar = tracker.get_slot("nombre_validar") 
                 clientes = sheets["clientes"]
-                clase_insert_data = InsertData(clientes)
 
-                data = clientes.get_all_records()
-                df = pd.DataFrame(data)
-                numero_clientes = list(df.telefono.unique())
-
-                if telefono not in numero_clientes:
-                    correo_electronico = tracker.get_slot("correo")
-                    nombre_ = nombre
-                    telefono_ = telefono
-                    correo = correo_electronico
-                    procedencia_ = procedencia
-
+                if nombre_validar == False:
+                    clase_insert_data = InsertData(clientes)
+                    procedencia_ = "Chatbot"
                     values = [nombre_, telefono_, correo, procedencia_]
                     clase_insert_data.insert_data(values)
                 else:
-                    pass
+                    clase_google_sheet = GoogleSheet(clientes)
+                    clase_google_sheet.update_cell_by_id(telefono_, "nombre", nombre)
+
+                
+
+
 
             else:
-                response = "No se ha podido encontrar tu pedido, porfavor vuelve a crear un link, escribiendo 'hacer pedido'"
+                response = "No se ha podido encontrar tu pedido, porfavor vuelve a crear un link escribiendo tu *Correo Electrónico*"
 
         else:
-            clase_google_sheet.update_cell_by_id(id_registro_venta, "problemas", "HAY PROBLEMAS EN REGISTRO")
-            response = "Te comparto el telefono de Tory Cafe, para que puedas llamar y puedan atenderte en breve."
+            clase_google_sheet.update_cell_by_id(id_registro_venta, "problema", "HAY PROBLEMAS EN REGISTRO")
+
+            FILE_NAME = f"TicketVenta-{id_registro_venta}.txt"
+
+            ticket_data = {"id_registro_venta": id_registro_venta,
+                           "Teléfono": telefono,
+                           "Correo": correo,
+                           "Nombre": "HAY PROBLEMAS, COMUNICATE DE INMEDIATO CON ESTA PERSONA"}
+            
+            clase = MensajesAutomatizados(FILE_NAME)
+            ticket_personalizacion = {}
+            clase.enviar(ticket_data, ticket_personalizacion,  "PROBLEMAS", telefono)
+
+            response = "En breve se comunicarán contigo, gracias por la espera!."
 
 
         dispatcher.utter_message(text=response)
-        return []
-    
+        return [SlotSet("programar", None), SlotSet("inmediato", None), SlotSet("telefono", None),  SlotSet("correo", None) ,SlotSet("hora", None)]
