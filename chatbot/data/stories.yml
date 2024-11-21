@@ -88,66 +88,7 @@ stories:
     - intent: intent_horario
     - action: action_get_horario
 
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_programar
-      entities:
-        - programar
-    - action: action_programar_pedido     
-    - intent: intent_programar_hora                                                
-      entities:
-        - hora
-    - action: utter_preferencia_pedido_recoger
-    - intent: intent_preferencia_recoger_enviar_pedido
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono                   
-    - intent: intent_registro_telefono                                                  
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
 
-- story: historia_pedidoinmediato menu_horarios_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-    - intent: intent_menu
-    - action: utter_ver_menu
-
-    - intent: intent_horario
-    - action: action_get_horario
-
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_inmediato
-      entities:
-        - inmediato
-    - action: utter_preferencia_pedido_inmediato     
-    - intent: intent_preferencia_recoger_enviar_pedido                                                
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono
-    - intent: intent_registro_telefono
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
 
 
 # -----------------------------------------------------------------------------------------------
@@ -163,366 +104,306 @@ stories:
     - intent: intent_forma_pago
     - action: utter_forma_pago
 
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_programar
-      entities:
-        - programar
-    - action: action_programar_pedido     
-    - intent: intent_programar_hora                                                
-      entities:
-        - hora
-    - action: utter_preferencia_pedido_recoger
-    - intent: intent_preferencia_recoger_enviar_pedido
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono                   
-    - intent: intent_registro_telefono                                                  
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
 
-- story: historia_pedidoinmediato menu_atencion_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-    - intent: intent_menu
-    - action: utter_ver_menu
+# # --------------------------------------------------------------------------------------------
 
-    - intent: intent_forma_pago
-    - action: utter_forma_pago
+# - story: historia_pedidoprogramar horarios_menu_pedido
+#   steps:
+#     - intent: intent_inicio
+#     #- action: action_save_phone_number
+#     - action: utter_inicio_panel
 
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_inmediato
-      entities:
-        - inmediato
-    - action: utter_preferencia_pedido_inmediato     
-    - intent: intent_preferencia_recoger_enviar_pedido                                                
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono
-    - intent: intent_registro_telefono
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
+#     - intent: intent_horario
+#     - action: action_get_horario
 
-# --------------------------------------------------------------------------------------------
+#     - intent: intent_menu
+#     - action: utter_ver_menu
 
-- story: historia_pedidoprogramar horarios_menu_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
+#     - intent: intent_pedido
+#     - action: action_validar_preferencia
+#     - intent: intent_validar_preferencia_programar
+#       entities:
+#         - programar
+#     - action: action_programar_pedido     
+#     - intent: intent_programar_hora                                                
+#       entities:
+#         - hora
+#     - action: utter_preferencia_pedido_recoger
+#     - intent: intent_preferencia_recoger_enviar_pedido
+#       entities:
+#         - recoger_eviar
+#     - action: utter_enviar_registro_numero_telefono                   
+#     - intent: intent_registro_telefono                                                  
+#       entities:
+#         - telefono
+#     - action: action_registro_correo_electronico                   
+#     - intent: intent_registro_correo_electronico                                                  
+#       entities:
+#         - correo
+#     - action: action_registro_link                   
+#     - intent: intent_registro_numero_registro                                                  
+#       entities:
+#         - numero
+#     - action: action_save_data
 
-    - intent: intent_horario
-    - action: action_get_horario
+# - story: historia_pedidoinmediato horarios_menu_pedido
+#   steps:
+#     - intent: intent_inicio
+#     #- action: action_save_phone_number
+#     - action: utter_inicio_panel
 
-    - intent: intent_menu
-    - action: utter_ver_menu
+#     - intent: intent_horario
+#     - action: action_get_horario
 
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_programar
-      entities:
-        - programar
-    - action: action_programar_pedido     
-    - intent: intent_programar_hora                                                
-      entities:
-        - hora
-    - action: utter_preferencia_pedido_recoger
-    - intent: intent_preferencia_recoger_enviar_pedido
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono                   
-    - intent: intent_registro_telefono                                                  
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
+#     - intent: intent_menu
+#     - action: utter_ver_menu
 
-- story: historia_pedidoinmediato horarios_menu_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-
-    - intent: intent_horario
-    - action: action_get_horario
-
-    - intent: intent_menu
-    - action: utter_ver_menu
-
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_inmediato
-      entities:
-        - inmediato
-    - action: utter_preferencia_pedido_inmediato     
-    - intent: intent_preferencia_recoger_enviar_pedido                                                
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono
-    - intent: intent_registro_telefono
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
+#     - intent: intent_pedido
+#     - action: action_validar_preferencia
+#     - intent: intent_validar_preferencia_inmediato
+#       entities:
+#         - inmediato
+#     - action: utter_preferencia_pedido_inmediato     
+#     - intent: intent_preferencia_recoger_enviar_pedido                                                
+#       entities:
+#         - recoger_eviar
+#     - action: utter_enviar_registro_numero_telefono
+#     - intent: intent_registro_telefono
+#       entities:
+#         - telefono
+#     - action: action_registro_correo_electronico                   
+#     - intent: intent_registro_correo_electronico                                                  
+#       entities:
+#         - correo
+#     - action: action_registro_link                   
+#     - intent: intent_registro_numero_registro                                                  
+#       entities:
+#         - numero
+#     - action: action_save_data
 
 # --------------------------------------------------------------------------------------------
 
-- story: historia_pedidoprogramar horarios_atencion_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-    - intent: intent_horario
-    - action: action_get_horario
+# - story: historia_pedidoprogramar horarios_atencion_pedido
+#   steps:
+#     - intent: intent_inicio
+#     #- action: action_save_phone_number
+#     - action: utter_inicio_panel
+#     - intent: intent_horario
+#     - action: action_get_horario
 
-    - intent: intent_forma_pago
-    - action: utter_forma_pago
+#     - intent: intent_forma_pago
+#     - action: utter_forma_pago
 
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_programar
-      entities:
-        - programar
-    - action: action_programar_pedido     
-    - intent: intent_programar_hora                                                
-      entities:
-        - hora
-    - action: utter_preferencia_pedido_recoger
-    - intent: intent_preferencia_recoger_enviar_pedido
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono                   
-    - intent: intent_registro_telefono                                                  
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
+#     - intent: intent_pedido
+#     - action: action_validar_preferencia
+#     - intent: intent_validar_preferencia_programar
+#       entities:
+#         - programar
+#     - action: action_programar_pedido     
+#     - intent: intent_programar_hora                                                
+#       entities:
+#         - hora
+#     - action: utter_preferencia_pedido_recoger
+#     - intent: intent_preferencia_recoger_enviar_pedido
+#       entities:
+#         - recoger_eviar
+#     - action: utter_enviar_registro_numero_telefono                   
+#     - intent: intent_registro_telefono                                                  
+#       entities:
+#         - telefono
+#     - action: action_registro_correo_electronico                   
+#     - intent: intent_registro_correo_electronico                                                  
+#       entities:
+#         - correo
+#     - action: action_registro_link                   
+#     - intent: intent_registro_numero_registro                                                  
+#       entities:
+#         - numero
+#     - action: action_save_data
 
-- story: historia_pedidoinmediato horarios_atencion_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-    - intent: intent_horario
-    - action: action_get_horario
+# - story: historia_pedidoinmediato horarios_atencion_pedido
+#   steps:
+#     - intent: intent_inicio
+#     #- action: action_save_phone_number
+#     - action: utter_inicio_panel
+#     - intent: intent_horario
+#     - action: action_get_horario
 
-    - intent: intent_forma_pago
-    - action: utter_forma_pago
+#     - intent: intent_forma_pago
+#     - action: utter_forma_pago
 
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_inmediato
-      entities:
-        - inmediato
-    - action: utter_preferencia_pedido_inmediato     
-    - intent: intent_preferencia_recoger_enviar_pedido                                                
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono
-    - intent: intent_registro_telefono
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
+#     - intent: intent_pedido
+#     - action: action_validar_preferencia
+#     - intent: intent_validar_preferencia_inmediato
+#       entities:
+#         - inmediato
+#     - action: utter_preferencia_pedido_inmediato     
+#     - intent: intent_preferencia_recoger_enviar_pedido                                                
+#       entities:
+#         - recoger_eviar
+#     - action: utter_enviar_registro_numero_telefono
+#     - intent: intent_registro_telefono
+#       entities:
+#         - telefono
+#     - action: action_registro_correo_electronico                   
+#     - intent: intent_registro_correo_electronico                                                  
+#       entities:
+#         - correo
+#     - action: action_registro_link                   
+#     - intent: intent_registro_numero_registro                                                  
+#       entities:
+#         - numero
+#     - action: action_save_data
 
-# --------------------------------------------------------------------------------------------
-
-
-- story: historia_pedidoprogramar atencion_menu_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-    - intent: intent_forma_pago
-    - action: utter_forma_pago
-
-    - intent: intent_menu
-    - action: utter_ver_menu
-
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_programar
-      entities:
-        - programar
-    - action: action_programar_pedido     
-    - intent: intent_programar_hora                                                
-      entities:
-        - hora
-    - action: utter_preferencia_pedido_recoger
-    - intent: intent_preferencia_recoger_enviar_pedido
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono                   
-    - intent: intent_registro_telefono                                                  
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
-
-- story: historia_pedidoinmediato atencion_menu_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-    - intent: intent_forma_pago
-    - action: utter_forma_pago
-
-    - intent: intent_menu
-    - action: utter_ver_menu
-
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_inmediato
-      entities:
-        - inmediato
-    - action: utter_preferencia_pedido_inmediato     
-    - intent: intent_preferencia_recoger_enviar_pedido                                                
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono
-    - intent: intent_registro_telefono
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
-
-# --------------------------------------------------------------------------------------------
+# # --------------------------------------------------------------------------------------------
 
 
-- story: historia_pedidoprogramar atencion_horarios_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-    - intent: intent_forma_pago
-    - action: utter_forma_pago
+# - story: historia_pedidoprogramar atencion_menu_pedido
+#   steps:
+#     - intent: intent_inicio
+#     #- action: action_save_phone_number
+#     - action: utter_inicio_panel
+#     - intent: intent_forma_pago
+#     - action: utter_forma_pago
 
-    - intent: intent_horario
-    - action: action_get_horario
+#     - intent: intent_menu
+#     - action: utter_ver_menu
 
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_programar
-      entities:
-        - programar
-    - action: action_programar_pedido     
-    - intent: intent_programar_hora                                                
-      entities:
-        - hora
-    - action: utter_preferencia_pedido_recoger
-    - intent: intent_preferencia_recoger_enviar_pedido
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono                   
-    - intent: intent_registro_telefono                                                  
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
+#     - intent: intent_pedido
+#     - action: action_validar_preferencia
+#     - intent: intent_validar_preferencia_programar
+#       entities:
+#         - programar
+#     - action: action_programar_pedido     
+#     - intent: intent_programar_hora                                                
+#       entities:
+#         - hora
+#     - action: utter_preferencia_pedido_recoger
+#     - intent: intent_preferencia_recoger_enviar_pedido
+#       entities:
+#         - recoger_eviar
+#     - action: utter_enviar_registro_numero_telefono                   
+#     - intent: intent_registro_telefono                                                  
+#       entities:
+#         - telefono
+#     - action: action_registro_correo_electronico                   
+#     - intent: intent_registro_correo_electronico                                                  
+#       entities:
+#         - correo
+#     - action: action_registro_link                   
+#     - intent: intent_registro_numero_registro                                                  
+#       entities:
+#         - numero
+#     - action: action_save_data
 
-- story: historia_pedidoinmediato atencion_horarios_pedido
-  steps:
-    - intent: intent_inicio
-    #- action: action_save_phone_number
-    - action: utter_inicio_panel
-    - intent: intent_forma_pago
-    - action: utter_forma_pago
+# - story: historia_pedidoinmediato atencion_menu_pedido
+#   steps:
+#     - intent: intent_inicio
+#     #- action: action_save_phone_number
+#     - action: utter_inicio_panel
+#     - intent: intent_forma_pago
+#     - action: utter_forma_pago
 
-    - intent: intent_horario
-    - action: action_get_horario
+#     - intent: intent_menu
+#     - action: utter_ver_menu
 
-    - intent: intent_pedido
-    - action: action_validar_preferencia
-    - intent: intent_validar_preferencia_inmediato
-      entities:
-        - inmediato
-    - action: utter_preferencia_pedido_inmediato     
-    - intent: intent_preferencia_recoger_enviar_pedido                                                
-      entities:
-        - recoger_eviar
-    - action: utter_enviar_registro_numero_telefono
-    - intent: intent_registro_telefono
-      entities:
-        - telefono
-    - action: action_registro_correo_electronico                   
-    - intent: intent_registro_correo_electronico                                                  
-      entities:
-        - correo
-    - action: action_registro_link                   
-    - intent: intent_registro_numero_registro                                                  
-      entities:
-        - numero
-    - action: action_save_data
+#     - intent: intent_pedido
+#     - action: action_validar_preferencia
+#     - intent: intent_validar_preferencia_inmediato
+#       entities:
+#         - inmediato
+#     - action: utter_preferencia_pedido_inmediato     
+#     - intent: intent_preferencia_recoger_enviar_pedido                                                
+#       entities:
+#         - recoger_eviar
+#     - action: utter_enviar_registro_numero_telefono
+#     - intent: intent_registro_telefono
+#       entities:
+#         - telefono
+#     - action: action_registro_correo_electronico                   
+#     - intent: intent_registro_correo_electronico                                                  
+#       entities:
+#         - correo
+#     - action: action_registro_link                   
+#     - intent: intent_registro_numero_registro                                                  
+#       entities:
+#         - numero
+#     - action: action_save_data
+
+# # --------------------------------------------------------------------------------------------
+
+
+# - story: historia_pedidoprogramar atencion_horarios_pedido
+#   steps:
+#     - intent: intent_inicio
+#     #- action: action_save_phone_number
+#     - action: utter_inicio_panel
+#     - intent: intent_forma_pago
+#     - action: utter_forma_pago
+
+#     - intent: intent_horario
+#     - action: action_get_horario
+
+#     - intent: intent_pedido
+#     - action: action_validar_preferencia
+#     - intent: intent_validar_preferencia_programar
+#       entities:
+#         - programar
+#     - action: action_programar_pedido     
+#     - intent: intent_programar_hora                                                
+#       entities:
+#         - hora
+#     - action: utter_preferencia_pedido_recoger
+#     - intent: intent_preferencia_recoger_enviar_pedido
+#       entities:
+#         - recoger_eviar
+#     - action: utter_enviar_registro_numero_telefono                   
+#     - intent: intent_registro_telefono                                                  
+#       entities:
+#         - telefono
+#     - action: action_registro_correo_electronico                   
+#     - intent: intent_registro_correo_electronico                                                  
+#       entities:
+#         - correo
+#     - action: action_registro_link                   
+#     - intent: intent_registro_numero_registro                                                  
+#       entities:
+#         - numero
+#     - action: action_save_data
+
+# - story: historia_pedidoinmediato atencion_horarios_pedido
+#   steps:
+#     - intent: intent_inicio
+#     #- action: action_save_phone_number
+#     - action: utter_inicio_panel
+#     - intent: intent_forma_pago
+#     - action: utter_forma_pago
+
+#     - intent: intent_horario
+#     - action: action_get_horario
+
+#     - intent: intent_pedido
+#     - action: action_validar_preferencia
+#     - intent: intent_validar_preferencia_inmediato
+#       entities:
+#         - inmediato
+#     - action: utter_preferencia_pedido_inmediato     
+#     - intent: intent_preferencia_recoger_enviar_pedido                                                
+#       entities:
+#         - recoger_eviar
+#     - action: utter_enviar_registro_numero_telefono
+#     - intent: intent_registro_telefono
+#       entities:
+#         - telefono
+#     - action: action_registro_correo_electronico                   
+#     - intent: intent_registro_correo_electronico                                                  
+#       entities:
+#         - correo
+#     - action: action_registro_link                   
+#     - intent: intent_registro_numero_registro                                                  
+#       entities:
+#         - numero
+#     - action: action_save_data
 
 # --------------------------------------------------------------------------------------------
 
