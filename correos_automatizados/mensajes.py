@@ -53,7 +53,7 @@ class GoogleDrive():
             <div class="header">¡Promociones Especiales para Ti, {nombre}!</div>
             <div class="body">
                 <p>Hola {nombre},</p>
-                <p>Estamos emocionados de ofrecerte descuentos exclusivos en nuestros productos. No pierdas esta oportunidad de aprovechar precios increíbles.</p>
+                <p>Estamos emocionados de ofrecerte caf. No pierdas esta oportunidad de aprovechar precios increíbles.</p>
                 <p>Haz clic en el enlace a continuación para ver nuestras ofertas:</p>
                 <a href="https://wa.me/14155238886" class="cta">Enviar Whatsapp</a>
             </div>
@@ -91,4 +91,3 @@ class GoogleDrive():
 if __name__ == "__main__":
     clase = GoogleDrive()
     clase.enviar_correos_programados()
-    
