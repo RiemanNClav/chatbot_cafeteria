@@ -10,6 +10,7 @@ RUN pip install -r requirements.txt
 
 
 COPY chatbot/google_drive /app/google_drive
+COPY chatbot/mensajes_automatizados /app/mensajes_automatizados
 COPY chatbot/actions /app/actions
 COPY chatbot/entrypoint.sh /app/entrypoint.sh
 COPY chatbot/endpoints.yml /app/endpoints.yml

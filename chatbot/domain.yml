@@ -6,17 +6,41 @@ intents:
   - intent_pedido
   - intent_horario
   - intent_forma_pago
-  - intent_registro_numero_registro
+  - intent_validar_preferencia_programar
+  - intent_programar_hora
   - intent_registro_telefono
   - intent_registro_correo_electronico
+  - intent_registro_numero_registro
+  - intent_validar_preferencia_inmediato
+  - intent_preferencia_recoger_enviar_pedido
+
 
 
 entities:
-  - numero
+  - programar
+  - hora
+  - recoger_enviar
   - telefono
   - correo
+  - numero
+  - inmediato
 
 slots:
+
+  programar:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: programar
+
+  hora:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: hora
+
 
   numero:
     type: text
@@ -26,15 +50,12 @@ slots:
         entity: numero
 
   telefono:
-    type: float
+    type: text
+    influence_conversation: false
     mappings:
       - type: from_entity
         entity: telefono
 
-  id_registro_venta:
-    type: text
-    mappings:
-      - type: custom
 
   correo:
     type: text
@@ -43,6 +64,61 @@ slots:
       - type: from_entity
         entity: correo
 
+  recoger_enviar:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: recoger_enviar
+
+  inmediato:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: inmediato
+
+
+  preferencia_pedido:
+    type: text
+    mappings:
+      - type: custom
+
+
+  id_registro_venta:
+    type: text
+    mappings:
+      - type: custom
+
+  fecha_registro:
+    type: text
+    mappings:
+      - type: custom
+
+  hora_registro:
+    type: text
+    mappings:
+      - type: custom
+
+  token:
+    type: text
+    mappings:
+      - type: custom
+
+  validar_correo:
+    type: text
+    mappings:
+      - type: custom
+
+  nombre_validar:
+    type: text
+    mappings:
+      - type: custom
+
+  validar_enlace:
+    type: text
+    mappings:
+      - type: custom
 
 
 responses:
@@ -50,45 +126,51 @@ responses:
   utter_inicio_panel:
     - text: "Hola, un gusto saludarte, Bienvenido a Tory Cafe, ¿En qué puedo ayudarte?\n
             Escribe alguna de las siguientes 4 opciones del panel:\n
-            1. ver menú\n
-            2. hacer pedido\n 
-            3. ver horarios\n 
-            4. formas de pago\n
-            (El menú te mostrará disponibilidad en tiempo real)"
+            1. Ver menu\n
+            2. Hacer pedido\n
+            3. Ver horarios\n 
+            4. Formas de pago\n"
 
   utter_ver_horarios:
     - text: "Los horarios de atención son los siguientes:\n
              Lunes a Viernes: 9am - 11pm\n
              Sábado y Domingo: 9am - 6pm\n
-             Realiza tu pedido escribiendo 'hacer pedido', de lo contrario consulta otra opción del panel."
+             Realiza tu pedido escribiendo *Hacer pedido*, de lo contrario consulta otra opción del panel."
 
   utter_ver_menu:
-    - text: "Claro, te comparto el siguiente pdf *enviar pdf*\n
-             Realiza tu pedido escribiendo 'hacer pedido', de lo contrario consulta otra opción del panel."
+    - text: "Claro, te comparto el siguiente pdf: https://drive.google.com/file/d/1JEoDhpxBzjU56zWNkbNxY8Z4BYG53eUl/view?usp=sharing\n
+             Realiza tu pedido escribiendo *Hacer pedido*, de lo contrario consulta otra opción del panel."
 
-  utter_registro_nombre:
-    - text: "Perfecto, gracias por tu confianza\n
-             Te comparto brevemente un [link](http://localhost:5056/), por favor llénalo.\n
-             Una vez completado, escribe el NOMBRE que proporcionaste:"
-
-  utter_registro_numero_registro:
-    - text: "tambien escribe tu NUMERO DE REGISTRO que se te proporcionó:"
 
   utter_forma_pago:
     - text: "Contamos con pagos en:\n
              - Efectivo (paga cuando te entreguen tus alimentos)\n
              - Pagos con tarjeta (te cobramos en el momento)\n
-             Realiza tu pedido escribiendo 'hacer pedido', de lo contrario consulta otra opción del panel."
+             Realiza tu pedido escribiendo *Hacer pedido*, de lo contrario consulta otra opción del panel."
 
-  utter_registro_correo_electronico:
-  - text: "Por último, ingresa también tu *CORREO ELECTRONICO*: "
+  utter_enviar_registro_numero_telefono:
+  - text: "Ingresa  tu *Número Telefónico*: "
+
+  utter_preferencia_pedido_recoger:
+  - text: "¿Prefieres tu pasar a recogerlo o que nosotros te lo enviemos?\n
+           Escribe *Yo paso* o *Ustedes*"
+
+  utter_preferencia_pedido_inmediato:
+  - text: "¿Prefieres tu pasar a recogerlo o que nosotros te lo enviemos?\n
+           Escribe *Yo paso* o *Ustedes*"
+  utter_programar_pedido:
+  - text: "Increíble, especifica la hora, utilizando el siguiente formato.\n
+           Ej. Horarios antes de las 12pm: 10:30, 11:15, ... \n
+                Horarios despues de las 12pm: 13:30, 18:40, ...."
+
 
 actions:
-  # - action_get_registro_pedido: {send_domain: True}
+  - action_validar_preferencia: {send_domain: True}
+  - action_registro_correo_electronico: {send_domain: True}
+  - action_registro_link: {send_domain: True}
   - action_save_data: {send_domain: True}
   - action_get_horario: {send_domain: True}
-  - action_registro_telefono: {send_domain: True}
-  - action_validar_telefono: {send_domain: True}
+  - action_programar_pedido: {send_domain: True}
 
 session_config:
   session_expiration_time: 60
