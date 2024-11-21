@@ -2,18 +2,18 @@ version: "3.1"
 
 rules:
 
-- rule: regla_inicio
+- rule: regla_inicio_panel
   steps:
   - intent: intent_inicio
   - action: utter_inicio_panel
 
-- rule: regla_menu
+- rule: regla_ver_menu
   steps:
   - intent: intent_menu
   - action: utter_ver_menu
 
 
-- rule: regla_horario
+- rule: regla_get_horario
   steps:
   - intent: intent_horario
   - action: action_get_horario
@@ -24,23 +24,48 @@ rules:
   - action: utter_forma_pago
 
 
-- rule: regla_numero
+- rule: regla_validar_preferencia
+  steps:
+  - intent: intent_pedido
+  - action: action_validar_preferencia
+
+
+- rule: regla_programar_pedido
+  steps:
+  - intent: intent_validar_preferencia_programar
+  - action: action_programar_pedido
+
+- rule: regla_pedido_recoger
+  steps:
+  - intent: intent_programar_hora                                                
+  - action: utter_preferencia_pedido_recoger
+
+
+- rule: regla_pedido_pedido_inmediato
+  steps:
+  - intent: intent_validar_preferencia_inmediato
+  - action: utter_preferencia_pedido_inmediato     
+
+
+- rule: regla_recoger_enviar_registro_numero_telefono
+  steps:
+  - intent: intent_preferencia_recoger_enviar_pedido
+  - action: utter_enviar_registro_numero_telefono
+
+
+- rule: regla_registro_correo_electronico
+  steps:
+  - intent: intent_registro_telefono
+  - action: action_registro_correo_electronico
+
+
+- rule: regla_registro_link
+  steps:
+  - intent: intent_registro_correo_electronico
+  - action: action_registro_link
+
+
+- rule: regla_save_data
   steps:
   - intent: intent_registro_numero_registro
   - action: action_save_data
-
-- rule: regla_acotar_telefono
-  steps:
-  - intent: intent_pedido
-  - action: action_validar_telefono
-
-
-- rule: regla_registro_telefono
-  steps:
-  - intent: intent_registro_telefono
-  - action: utter_registro_correo_electronico
-
-- rule: regla_registro_correo
-  steps:
-  - intent: intent_registro_correo_electronico
-  - action: action_registro_telefono

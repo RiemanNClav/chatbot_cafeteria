@@ -61,55 +61,159 @@ nlu:
     - hacerpedido
     - HacerPedido
     - HACERPEDIDO
-    - pedido
-    - Pedido
-    - PEDIDO
 
-
-- intent: intent_horario
+- intent: intent_validar_preferencia_programar
   examples: |
-    - ver horarios
-    - Ver horarios
-    - ver Horarios
-    - Ver Horarios
-    - VER HORARIOS
-    - verhorarios
-    - VerHorarios
-    - VERHORARIOS
-    - horarios
-    - Horarios
-    - HORARIOS
+    - [Programar pedido para recibir despues](programar)
+    - [programar Pedido para recibir despues](programar)
+    - [programar pedido Para recibir despues](programar)
+    - [programar pedido para recibir después](programar)
+    - [programar Pedido para recibir después](programar)
+    - [programar pedido Para recibir después](programar)
+    - [Pedido programar para recibir después](programar)
+    - [Pedido para programar recibir después](programar)
+    - [Pedido para recibir programar después](programar)
+    - [programar recibir pedido para después](programar)
+    - [para programar pedido recibir después](programar)
+    - [para recibir programar pedido después](programar)
+    - [recibir pedido programar para después](programar)
+    - [recibir para programar pedido después](programar)
+    - [recibir programar para pedido después](programar)
+    - [después programar pedido para recibir](programar)
+    - [después para programar pedido recibir](programar)
+    - [después para recibir programar pedido](programar)
+    - [después recibir programar pedido para](programar)
+    - [después recibir para programar pedido](programar)
+    - [recibir después programar pedido para](programar)
+    - [recibir después para programar pedido](programar)
+    - [programar después recibir pedido para](programar)
+    - [programar después para recibir pedido](programar)
+    - [programar después pedido para recibir](programar)
 
 
 
-- intent: intent_forma_pago
+- intent: intent_validar_preferencia_inmediato
   examples: |
-    - formas de pago
-    - Formas de pago
-    - Formas De pago
-    - Formas de Pago
-    - forma de pago
-    - Forma de pago
-    - Forma De Pago
-    - forma de pagar
-    - Forma de pagar
-    - FORMA DE PAGAR 
-    - Formas
-    - formas
-    - FORMAS
-    - Pagos
-    - pagos
-    - PAGOS
+    - [hacer pedido inmediato](inmediato)
+    - [Hacer pedido inmediato](inmediato)
+    - [hacer Pedido inmediato](inmediato)
+    - [hacer pedido Inmediato](inmediato)
+    - [HACER PEDIDO INMEDIATO](inmediato)
+    - [hacerpedidoinmediato](inmediato)
+    - [HACERPEDIDOINMEDIATO](inmediato)
+    - [HacerPedidoInmediato](inmediato)
+    - [inmediato](inmediato)
+    - [Inmediato](inmediato)
+    - [INMEDIATO](inmediato)
+    - [pedido Inmediato](inmediato)
+    - [Pedido Inmediato](inmediato)
+    - [PedidoInmediato](inmediato)
+    - [PEDIDOINMEDIATO](inmediato)
 
-
-- intent: intent_registro_numero_registro
+- intent: intent_programar_hora
   examples: |
-    - [registrado](numero)
-    - [Registrado](numero)
-    - [REGISTRADO](numero)
-    - [problema](numero)
-    - [Problema](numero)
-    - [PROBLEMA](numero)
+    - [11:30](hora)
+    - [18:42](hora)
+    - [07:15](hora)
+    - [23:59](hora)
+    - [00:00](hora)
+    - [09:45](hora)
+    - [14:20](hora)
+    - [16:05](hora)
+    - [08:30](hora)
+    - [12:50](hora)
+    - [21:10](hora)
+    - [10:25](hora)
+    - [15:40](hora)
+    - [03:00](hora)
+    - [06:55](hora)
+    - [13:35](hora)
+    - [19:45](hora)
+
+
+- intent: intent_preferencia_recoger_enviar_pedido
+  examples: |
+    - [Yo paso a recogerlo](recoger_enviar)
+    - [paso a recogerlo](recoger_enviar)
+    - [Yo lo recojo](recoger_enviar)
+    - [yo paso por él](recoger_enviar)
+    - [paso por eso](recoger_enviar)
+    - [paso por el pedido](recoger_enviar)
+    - [paso](recoger_enviar)
+    - [Paso](recoger_enviar)
+    - [PASO](recoger_enviar)
+    - [quiero pasar a recogerlo](recoger_enviar)
+    - [prefiero recogerlo](recoger_enviar)
+    - [ustedes envíenmelo](recoger_enviar)
+    - [envíenmelo](recoger_enviar)
+    - [me lo envían](recoger_enviar)
+    - [quiero que me lo envíen](recoger_enviar)
+    - [prefiero que lo envíen](recoger_enviar)
+    - [prefiero que ustedes me lo envíen](recoger_enviar)
+    - [quiero que lo envíen a mi domicilio](recoger_enviar)
+    - [lo envían a mi dirección](recoger_enviar)
+    - [envíenlo a mi casa](recoger_enviar)
+    - [por favor envíenmelo](recoger_enviar)
+    - [envíen el pedido](recoger_enviar)
+    - [envienlo](recoger_enviar)
+    - [Envienmelo](recoger_enviar)
+    - [ENVIENLO](recoger_enviar)
+    - [ENVIENMELO](recoger_enviar)
+    - [ustedes](recoger_enviar)
+    - [Ustedes](recoger_enviar)
+    - [USTEDES](recoger_enviar)
+
+
+- intent: intent_registro_correo_electronico
+  examples: |
+    - [angel.chavez.clavellina@gmail.com](correo)
+    - [maria.sanchez.99@yahoo.com](correo)
+    - [pedro_martinez123@outlook.com](correo)
+    - [juan.perez@hotmail.com](correo)
+    - [sara_lopez@company.org](correo)
+    - [carlos.rodriguez@school.edu](correo)
+    - [josefa_garcia87@gmail.com](correo)
+    - [ana.mendoza.2024@corporate.net](correo)
+    - [alejandro_diaz@yahoo.es](correo)
+    - [sandra.morales@mybusiness.com](correo)
+    - [luisa.castillo85@company.org](correo)
+    - [fernando.lopez88@gmail.com](correo)
+    - [carolina.ramos@domain.net](correo)
+    - [miguelangel1234@webmail.com](correo)
+    - [martin.gonzalez@university.edu](correo)
+    - [laura_fernandez@enterprise.org](correo)
+    - [roberto.vasquez75@outlook.com](correo)
+    - [andrea.munoz@service.com](correo)
+    - [guillermo_moreno@yahoo.com](correo)
+    - [valeria.torres@custommail.net](correo)
+    - [antonio.ruiz@provider.org](correo)
+    - [patricia.navarro@workplace.co](correo)
+    - [daniel.silva.1995@gmail.com](correo)
+    - [camila.ortega@professional.com](correo)
+    - [ricardo.mendez@school.edu](correo)
+    - [lucia_dominguez90@hotmail.com](correo)
+    - [eduardo_vega@yahoo.es](correo)
+    - [monica_alvarez@company.org](correo)
+    - [sebastian_flores@outlook.com](correo)
+    - [beatriz.morales@project.net](correo)
+    - [raul.cabrera@mail.com](correo)
+    - [isabel.soto_94@business.co](correo)
+    - [julian_gutierrez@organization.org](correo)
+    - [esteban.rivera@gmail.com](correo)
+    - [natalia_sanchez@customservice.net](correo)
+    - [francisco_martinez@personal.com](correo)
+    - [sofia.rojas@yahoo.com](correo)
+    - [victor_ramirez@enterprise.co](correo)
+    - [gabriela_duran@platform.com](correo)
+    - [pablo.vargas@nonprofit.org](correo)
+    - [link](correo)
+    - [LINK](correo)
+    - [lInk](correo)
+    - [liNk](correo)
+    - [linK](correo)
+    - [Link(correo)
+    - [linK](correo)
+    - [aqui esta el LinK](correo)
 
 - intent: intent_registro_telefono
   examples: |
@@ -164,45 +268,57 @@ nlu:
     - [6147654321](telefono)
     - [3221234567](telefono)
 
-- intent: intent_registro_correo_electronico
+
+- intent: intent_registro_numero_registro
   examples: |
-    - [angel.chavez.clavellina@gmail.com](correo)
-    - [maria.sanchez.99@yahoo.com](correo)
-    - [pedro_martinez123@outlook.com](correo)
-    - [juan.perez@hotmail.com](correo)
-    - [sara_lopez@company.org](correo)
-    - [carlos.rodriguez@school.edu](correo)
-    - [josefa_garcia87@gmail.com](correo)
-    - [ana.mendoza.2024@corporate.net](correo)
-    - [alejandro_diaz@yahoo.es](correo)
-    - [sandra.morales@mybusiness.com](correo)
-    - [luisa.castillo85@company.org](correo)
-    - [fernando.lopez88@gmail.com](correo)
-    - [carolina.ramos@domain.net](correo)
-    - [miguelangel1234@webmail.com](correo)
-    - [martin.gonzalez@university.edu](correo)
-    - [laura_fernandez@enterprise.org](correo)
-    - [roberto.vasquez75@outlook.com](correo)
-    - [andrea.munoz@service.com](correo)
-    - [guillermo_moreno@yahoo.com](correo)
-    - [valeria.torres@custommail.net](correo)
-    - [antonio.ruiz@provider.org](correo)
-    - [patricia.navarro@workplace.co](correo)
-    - [daniel.silva.1995@gmail.com](correo)
-    - [camila.ortega@professional.com](correo)
-    - [ricardo.mendez@school.edu](correo)
-    - [lucia_dominguez90@hotmail.com](correo)
-    - [eduardo_vega@yahoo.es](correo)
-    - [monica_alvarez@company.org](correo)
-    - [sebastian_flores@outlook.com](correo)
-    - [beatriz.morales@project.net](correo)
-    - [raul.cabrera@mail.com](correo)
-    - [isabel.soto_94@business.co](correo)
-    - [julian_gutierrez@organization.org](correo)
-    - [esteban.rivera@gmail.com](correo)
-    - [natalia_sanchez@customservice.net](correo)
-    - [francisco_martinez@personal.com](correo)
-    - [sofia.rojas@yahoo.com](correo)
-    - [victor_ramirez@enterprise.co](correo)
-    - [gabriela_duran@platform.com](correo)
-    - [pablo.vargas@nonprofit.org](correo)
+    - [registrado](numero)
+    - [Registrado](numero)
+    - [REGISTRADO](numero)
+    - [reg](numero)
+    - [Regis](numero)
+    - [Regs](numero)
+    - [regs](numero)
+    - [problema](numero)
+    - [Problema](numero)
+    - [PROBLEMA](numero)
+    - [prob](numero)
+    - [probl](numero)
+    - [proble](numero)
+
+
+
+
+- intent: intent_horario
+  examples: |
+    - ver horarios
+    - Ver horarios
+    - ver Horarios
+    - Ver Horarios
+    - VER HORARIOS
+    - verhorarios
+    - VerHorarios
+    - VERHORARIOS
+    - horarios
+    - Horarios
+    - HORARIOS
+
+
+
+- intent: intent_forma_pago
+  examples: |
+    - formas de pago
+    - Formas de pago
+    - Formas De pago
+    - Formas de Pago
+    - forma de pago
+    - Forma de pago
+    - Forma De Pago
+    - forma de pagar
+    - Forma de pagar
+    - FORMA DE PAGAR 
+    - Formas
+    - formas
+    - FORMAS
+    - Pagos
+    - pagos
+    - PAGOS
