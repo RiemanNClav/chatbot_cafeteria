@@ -11,7 +11,6 @@ import json
 import tempfile
 
 
-
 def get_google_credentials_from_secrets():
     # Configuración de AWS Secrets Manager
     client = boto3.client('secretsmanager', region_name='us-east-2')  # Ajusta la región
@@ -92,7 +91,7 @@ class GoogleSheet:
         return filtered_data #devuelve un data frame de una tabla, de dos filas siendo la primera las cabeceras de las columnas y la segunda los valores filtrados para acceder a un valor en concreto df["nombre"].to_string()
     
     def write_data(self, range, values): #range ej "A1:V1". values must be a list of list
-        self.sheet.update(range, values)
+        self.sheet.update(range_name=range, values=values)
 
     def write_data_by_uid(self, uid, values): 
         # Find the row index based on the UID
@@ -160,13 +159,35 @@ class InsertData:
 
 
 if __name__=="__main__":
+
     clase_google_drive = GoogleDrive()
     sheets = clase_google_drive.obtener_sheets()
-    registro_ventas = sheets["registro_ventas"]
 
-    values = ["id_registro_venta", "id_cliente", "token", "numero_registro", 
-                "nombre", "telefono", "direccion", "fecha_registro", 
-                "hora_registro", "0", 1, " 0", "0 ", " 0", " 0", "0 "]
+    registro_bebidas = sheets["registro_bebidas"]
+
+    data = registro_bebidas.get_all_records()
+    df = pd.DataFrame(data)[["token_sesion", "categoria", "subcategoria", "tipo_leche", "azucar_extra", "consideraciones", "precio"]]
+    df["token"] = df["token_sesion"].apply(lambda x: x.split('_')[0])
+    filter = df[df["token"] == "1057-7294-1613"].drop(["token_sesion", "token"], axis=1)
+    ticket_bebidas = filter.to_dict(orient='records')
+    print(ticket_bebidas)
+    # -------------------------------------------------------------------------------------------
+
+    # ticket_data = {"id_registro_venta": "1057-534",
+    #                "Fecha de registro": "2024-11-13",
+    #                "Hora de registro": 16.13,
+    #                "Hora de confirmación": "2024-11-13",
+    #                "Nombre": "Maduro el frande",
+    #                "Correo": "angel.chavez.clavellina@gmail.com",
+    #                "Teléfono": "41715153"}
         
-    clase_insert_data = InsertData(registro_ventas)
-    clase_insert_data.insert_data(values)
+                
+    # clase = MensajesAutomatizados("316-2552-1401.txt")
+    # clase.enviar(ticket_data, ticket_bebidas, "Maduro el grande", "5565637294")
+
+    # values = ["id_registro_venta", "id_cliente", "token", "numero_registro", 
+    #             "nombre", "telefono", "direccion", "fecha_registro", 
+    #             "hora_registro", "0", 1, " 0", "0 ", " 0", " 0", "0 "]
+        
+    # clase_insert_data = InsertData(registro_ventas)
+    # clase_insert_data.insert_data(values)
