@@ -1,21 +1,29 @@
 import pandas as pd
+import os
 import gspread
 from google.oauth2.service_account import Credentials
 
-import json
 import boto3
+import json
+import tempfile
+
 
 def get_google_credentials_from_secrets():
     # Configuración de AWS Secrets Manager
     client = boto3.client('secretsmanager', region_name='us-east-2')  # Ajusta la región
-    secret_name = 'credentials-service-account'
+    secret_name = 'credentials-service-account'  # ARN del secreto exacto
 
     # Obtener las credenciales del Secret Manager
     response = client.get_secret_value(SecretId=secret_name)
     secret = response['SecretString']
     credentials_info = json.loads(secret)
 
-    return credentials_info
+    # Crear un archivo temporal con las credenciales de Google
+    with tempfile.NamedTemporaryFile(delete=False, mode='w', encoding='utf-8') as temp_file:
+        json.dump(credentials_info, temp_file)
+        temp_file_path = temp_file.name  # Ruta del archivo temporal
+
+    return temp_file_path
 
 
 class GoogleDrive:
@@ -37,7 +45,7 @@ class GoogleDrive:
         base_datos = cliente.open("base_datos_tory_cafe")
         sheets = {
             "registro_ventas": base_datos.get_worksheet(0),
-            "registro_bebidas": base_datos.get_worksheet(1),
+            "registro_personalizaciones": base_datos.get_worksheet(1),
             "precios": base_datos.get_worksheet(2),
             "clientes": base_datos.get_worksheet(3),
             "horarios": base_datos.get_worksheet(4),
@@ -94,24 +102,27 @@ class GoogleSheet:
         except gspread.exceptions.CellNotFound:
             print(f"UID {uid} no encontrado.")
 
-    def update_cell_by_id(self, token_session, column_name, new_value):
+    def update_multiple_cells_by_id(self, token_session, dict_columnas_valores):
         try:
-            # Buscar la fila del UID
+            # Obtener los datos de la hoja
             data = self.sheet.get_all_records()
             df = pd.DataFrame(data)
             
-            # Encontrar el índice de la columna
-            col_index = df.columns.get_loc(column_name) + 1  # +1 porque las columnas empiezan desde 1 en Google Sheets
-
             # Buscar el UID en la hoja
             cell = self.sheet.find(token_session)
             row_index = cell.row
-
-            # Actualizar el valor en la celda específica
-            self.sheet.update_cell(row_index, col_index, new_value)
-            print(f"Celda en la fila {row_index}, columna '{column_name}' actualizada a '{new_value}'.")
-        except:
-            print(f"UID {token_session} no encontrado.")
+            
+            # Iterar sobre el diccionario de columnas y valores
+            for column_name, new_value in dict_columnas_valores.items():
+                # Encontrar el índice de la columna
+                col_index = df.columns.get_loc(column_name) + 1  # +1 porque las columnas empiezan desde 1 en Google Sheets
+                
+                # Actualizar el valor en la celda correspondiente
+                self.sheet.update_cell(row_index, col_index, new_value)
+                print(f"Celda en la fila {row_index}, columna '{column_name}' actualizada a '{new_value}'.")
+                
+        except Exception as e:
+            print(f"Error: {str(e)}. UID {token_session} no encontrado.")
     
 
 class InsertData:

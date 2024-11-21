@@ -63,6 +63,30 @@
                 </li>
             {% endfor %}
         </ul>
+
+        <h2>Detalle de los Alimentos</h2>
+        <ul>
+            {% for alimento in alimentos %}
+                <li>
+                    <strong>Alimento:</strong> {{ alimento.tipo_alimento }} |
+                    <strong>Categoría:</strong> {{ alimento.categoria }} |
+                    <strong>Subcategoría:</strong> {{ alimento.subcategoria }} |
+                    <strong>Consideraciones:</strong> {{ alimento.consideraciones }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>Detalle de las Promociones</h2>
+        <ul>
+            {% for promocion in promociones %}
+                <li>
+                    <strong>Bebida:</strong> {{ promocion.tipo_bebida }} |
+                    <strong>Categoría:</strong> {{ promocion.categoria }} |
+                    <strong>Subcategoría:</strong> {{ promocion.subcategoria }} |
+                    <strong>Consideraciones:</strong> {{ promocion.consideraciones }}
+                </li>
+            {% endfor %}
+        </ul>
     </section>
 
     <section>

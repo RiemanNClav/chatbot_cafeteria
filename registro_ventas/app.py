@@ -11,14 +11,44 @@ sheets = clase_google_drive.obtener_sheets()
 precios = sheets["precios"]
 
 clase_precios = Precios(precios)
-categorias_bebidas = clase_precios.obtener_precios()
+producto_bebidas = clase_precios.obtener_precios("bebida")
+producto_alimentos = clase_precios.obtener_precios("alimento")
+producto_promociones = clase_precios.obtener_precios("promociones")
 
 
 app = Flask(__name__)
-app.secret_key = 'mi_clave_secreta_unica_y_segura'
 
-# Obtener la URL base desde una variable de entorno
-APP_BASE_URL = os.getenv('APP_BASE_URL', 'http://localhost:5056')
+app.secret_key = os.environ.get("SECRET_KEY")
+
+
+def personalizaciones_bebidas(cantidad, nombre):
+        list_ = []
+        for i in range(cantidad):
+            dicc = {
+                'categoria': request.form.get(f"categoria_bebida_{i}"),
+                'subcategoria': request.form.get(f"subcategoria_bebida_{i}"),
+                'tipo_leche': request.form.get(f"tipo_leche_{i}"),
+                'azucar': request.form.get(f"azucar_{i}"),
+                'consideraciones': request.form.get(f"consideraciones_{i}")
+            }
+            list_.append(dicc)
+
+        session[nombre] = list_
+
+def personalizaciones(cantidad, nombre):
+        list_ = []
+        singular = nombre[:-1]
+        if nombre == 'promociones':
+            singular = nombre[:-2]
+        for i in range(cantidad):
+            dicc = {
+                'categoria': request.form.get(f"categoria_{singular}_{i}"),
+                'subcategoria': request.form.get(f"subcategoria_{singular}_{i}"),
+                'consideraciones': request.form.get(f"consideraciones_{nombre}_{i}")
+            }
+            list_.append(dicc)
+
+        session[nombre] = list_
 
 
 @app.route("/<token>", methods=["GET", "POST"])
@@ -28,97 +58,144 @@ def registrar_pedido(token):
     if request.method == "POST":
         nombre = request.form.get("nombre")
         cantidad_bebidas = int(request.form.get("cantidad_bebidas"))
+        cantidad_alimentos = int(request.form.get("cantidad_alimentos"))
+        cantidad_promociones = int(request.form.get("cantidad_promociones"))
+
         session['nombre'] = nombre
 
-        bebidas = []
-        for i in range(cantidad_bebidas):
-            bebida = {
-                'categoria': request.form.get(f"categoria_bebida_{i}"),
-                'subcategoria': request.form.get(f"subcategoria_bebida_{i}"),
-                'tipo_leche': request.form.get(f"tipo_leche_{i}"),
-                'azucar': request.form.get(f"azucar_{i}"),
-                'consideraciones': request.form.get(f"consideraciones_{i}")
-            }
-            bebidas.append(bebida)
+        personalizaciones_bebidas(cantidad_bebidas, "bebidas")
+        personalizaciones(cantidad_alimentos, "alimentos")
+        personalizaciones(cantidad_promociones, "promociones")
+    
 
-        session['bebidas'] = bebidas
 
         return redirect(url_for("resumen_pedido", token=token))
 
-    return render_template("home.html", token=token, categorias_bebidas=categorias_bebidas)
-
-# El resto del código permanece igual
+    return render_template("home.html", token=token, categorias_bebidas=producto_bebidas, categorias_alimentos=producto_alimentos, categorias_promociones=producto_promociones)
 
 
 
-# Ruta para mostrar el resumen, que también requiere el mismo token
 @app.route("/resumen/<token>", methods=["GET", "POST"])
 def resumen_pedido(token):
+
+    dicc_personalizaciones = {'bebidas': session.get("bebidas", []),
+                              'alimentos': session.get("alimentos", []),
+                              'promociones': session.get("promociones", [])}
 
 
     if request.method == "POST":
         if 'confirmar_pedido' in request.form:
-            # Aquí puedes manejar la confirmación, por ejemplo, guardar en una base de datos
-            response = f"Pedido realizado, ¡Gracias!\n"
-            response += "En el chatbot, favor de escribir la palabra 'registrado'"
-            return response
+            # ---------------------------------------------------------
+            # Guardar datos solo al confirmar el pedido
+            sheet_personalizaciones = sheets["registro_personalizaciones"]
+            clase_insert_data = InsertData(sheet_personalizaciones)
+            registro_personalizaciones = GoogleSheet(sheet_personalizaciones)
+
+
+            # dicc_personalizaciones = {'bebidas': session.get("bebidas", []),
+            #                           'alimentos': session.get("alimentos", []),
+            #                           'promociones': session.get("promociones", [])}
+            
+            nombre = session.get('nombre')
+            total=0
+            j=1
+            for productos, sesiones in dicc_personalizaciones.items():
+
+                cantidad_producto = len(sesiones)
+            
+                for i in range(cantidad_producto):
+                    dicc = sesiones[i]
+                    print(dicc)
+                    subcategoria = dicc["subcategoria"].split('-')[0]
+                    precio = float(dicc["subcategoria"].split('-')[1].replace('MXN', '').strip())
+                    print(f"Precio: {precio}")
+                    new_token = token + '_' + str(j)
+
+                    tipo_leche = 'No Aplica'
+                    azucar_extra = "No Aplica"
+                    if productos == "bebidas":
+                        tipo_leche = dicc["tipo_leche"]
+                        azucar_extra = dicc["azucar"]
+
+                    dicc = {"nombre": nombre,
+                            'producto': productos,
+                            "categoria": dicc["categoria"],
+                            "subcategoria": subcategoria,
+                            "tipo_leche": tipo_leche,
+                            "azucar_extra": azucar_extra,
+                            "consideraciones": dicc["consideraciones"],
+                            "precio": precio}
+
+                    clase_insert_data.insert_data(new_token, j)
+                    registro_personalizaciones.update_multiple_cells_by_id(new_token, dicc)
+
+                    j += 1
+                    total += precio
+
+            latitud = session.get('latitud')
+            longitud = session.get('longitud')
+            clase_api_adress = ApiAddress()
+            session["total"] = total
+
+            direccion = clase_api_adress.api_request_object_1(latitud, longitud)
+            _, radio, distancia = clase_api_adress.bola_cerrada(latitud, longitud)
+            session["direccion"] = direccion
+
+            
+            dicc2 = {'nombre': nombre,
+                     "cantidad_bebidas": len(dicc_personalizaciones["bebidas"]),
+                     "cantidad_alimentos": len(dicc_personalizaciones["alimentos"]),
+                     "cantidad_promociones": len(dicc_personalizaciones["promociones"]),
+                     "direccion": direccion,
+                     "cobertura": "DENTRO DEL RADIO",
+                     "radio_km": radio,
+                     "distancia": distancia,
+                     "total": total}
+            
+            registro_ventas = GoogleSheet(sheets["registro_ventas"])
+            registro_ventas.update_multiple_cells_by_id(token, dicc2)
+                
+            session['pedido_confirmado'] = True
+            return redirect(url_for("pedido_confirmado", token=token))
+
         elif 'reiniciar' in request.form:
             session.clear()  # Limpiar la sesión para reiniciar el formulario
             return redirect(url_for("registrar_pedido", token=token))
-
-    # Cargar los datos del resumen desde la sesión
-    sheet_bebidas = sheets["registro_bebidas"]
-    clase_insert_data = InsertData(sheet_bebidas)
-
-    nombre = session.get('nombre')
-    bebidas = session.get("bebidas")
-    cantidad_bebidas = len(bebidas)
-
-    total = 0
-    registro_bebidas = sheets["registro_bebidas"]
-    registro_bebidas = GoogleSheet(registro_bebidas)
-
-    registro_ventas = sheets["registro_ventas"]
-    registro_ventas = GoogleSheet(registro_ventas)
-
-    for i in range(cantidad_bebidas):
-        dicc = bebidas[i]
-        subcategoria = dicc["subcategoria"].split('-')[0]
-        precio = float(dicc["subcategoria"].split('-')[1].replace('MXN', '').strip())
-        new_token = token + '_' + str(i+1)
-        clase_insert_data.insert_data(new_token, i+1)
-        registro_bebidas.update_cell_by_id(new_token, "nombre", nombre)
-        registro_bebidas.update_cell_by_id(new_token, "categoria", dicc["categoria"])
-        registro_bebidas.update_cell_by_id(new_token,  "subcategoria", subcategoria)
-        registro_bebidas.update_cell_by_id(new_token, "tipo_leche", dicc["tipo_leche"])
-        registro_bebidas.update_cell_by_id(new_token, "azucar_extra", dicc["azucar"])
-        registro_bebidas.update_cell_by_id(new_token, "consideraciones", dicc["consideraciones"])
-        registro_bebidas.update_cell_by_id(new_token, "precio", precio)
-
-        total += precio
-
-
-    registro_ventas.update_cell_by_id(token, "nombre", nombre)
-    registro_ventas.update_cell_by_id(token, "cantidad_bebidas", cantidad_bebidas)
 
     latitud = session.get('latitud')
     longitud = session.get('longitud')
 
     clase_api_adress = ApiAddress()
-
     direccion = clase_api_adress.api_request_object_1(latitud, longitud)
-    _, radio, distancia= clase_api_adress.bola_cerrada(latitud, longitud)
+
+    bebidas = dicc_personalizaciones["bebidas"]
+    print(bebidas)
+    alimentos = dicc_personalizaciones["alimentos"]
+    print(alimentos)
+    promociones = dicc_personalizaciones["promociones"]
+    print(promociones)
+
+    u = [bebidas, alimentos, promociones]
+    u_new=[]
+    for i in u:
+        if i != []:
+            u_new.append(i[0])
 
 
-    registro_ventas.update_cell_by_id(token, "direccion", direccion)
-    registro_ventas.update_cell_by_id(token, "cobertura", "DENTRO DEL RADIO DE COBERTURA")
+    nombre = session.get('nombre')
 
-    registro_ventas.update_cell_by_id(token, "radio_km", radio)
-    registro_ventas.update_cell_by_id(token, "distancia", distancia)
 
-    bebidas = session.get('bebidas', [])
-    
-    return render_template("resumen.html", nombre=nombre, direccion=direccion, bebidas=bebidas, total=total, token=token)
+    total = sum([float(dicc["subcategoria"].split('-')[1].replace('MXN', '').strip())  for dicc in u_new])
+    # except:
+    #     total=0
+
+    return render_template("resumen.html", nombre=nombre, direccion=direccion, bebidas=bebidas, alimentos=alimentos, promociones=promociones, total=total, token=token)
+
+
+
+@app.route("/pedido_confirmado/<token>")
+def pedido_confirmado(token):
+    return "¡Gracias! Tu pedido ha sido confirmado exitosamente."
 
 @app.route('/guardar_ubicacion', methods=['POST'])
 def guardar_ubicacion():
@@ -143,15 +220,9 @@ def guardar_ubicacion():
 def guardar_token():
     data = request.json
     token_sesion = data.get('token_sesion')
-    # token_sesion = "62a483fc-9d2b-4f44-adf8-9bcea9bd0a14"
-    # Genera el enlace único con el token
-    enlace = f"{APP_BASE_URL}/{token_sesion}"
 
-    # Aquí puedes guardar el id_registro_venta y el token_sesion en tu base de datos si es necesario.
-    # Ejemplo:
-    # clase.guardar_token_en_bd(id_registro_venta, token_sesion)
+    enlace = f"http://registro-ventas:5056/{token_sesion}"
 
-    # Retornar el enlace al chatbot
     return jsonify({"enlace": enlace})
 
 
@@ -163,3 +234,4 @@ def error():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5056)
+
