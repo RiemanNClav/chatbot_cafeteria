@@ -221,7 +221,7 @@ def guardar_token():
     data = request.json
     token_sesion = data.get('token_sesion')
 
-    enlace = f"http://registro-ventas:5056/{token_sesion}"
+    enlace = f"https://2d06-2806-2a0-1220-8638-c79-7747-3bd9-a733.ngrok-free.app/{token_sesion}"
 
     return jsonify({"enlace": enlace})
 
