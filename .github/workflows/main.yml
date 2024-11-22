@@ -68,17 +68,17 @@ jobs:
           docker push $ECR_REGISTRY/$ACTIONS_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ACTIONS_REPOSITORY:$IMAGE_TAG"
 
-      # Build and push Registro Ventas image
-      - name: Build Registro Ventas Image
-        id: build-registro-ventas-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REGISTRO_VENTAS_REPOSITORY: ${{ secrets.REGISTRO_VENTAS_ECR_REPOSITORY }}
-          IMAGE_TAG: latest
-        run: |
-          docker build -t $ECR_REGISTRY/$REGISTRO_VENTAS_REPOSITORY:$IMAGE_TAG -f registro_ventas/registro_ventas.dockerfile .
-          docker push $ECR_REGISTRY/$REGISTRO_VENTAS_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$REGISTRO_VENTAS_REPOSITORY:$IMAGE_TAG"
+      # # Build and push Registro Ventas image
+      # - name: Build Registro Ventas Image
+      #   id: build-registro-ventas-image
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     REGISTRO_VENTAS_REPOSITORY: ${{ secrets.REGISTRO_VENTAS_ECR_REPOSITORY }}
+      #     IMAGE_TAG: latest
+      #   run: |
+      #     docker build -t $ECR_REGISTRY/$REGISTRO_VENTAS_REPOSITORY:$IMAGE_TAG -f registro_ventas/registro_ventas.dockerfile .
+      #     docker push $ECR_REGISTRY/$REGISTRO_VENTAS_REPOSITORY:$IMAGE_TAG
+      #     echo "::set-output name=image::$ECR_REGISTRY/$REGISTRO_VENTAS_REPOSITORY:$IMAGE_TAG"
 
 
   continuous-deployment:
@@ -130,9 +130,9 @@ jobs:
           docker run -d -p 5055:5055 --name=rasa-run-action-server --network rasa-network -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ACTIONS_ECR_REPOSITORY }}:latest
 
 
-      - name: Registro Ventas Containes
-        run: |
-          docker run -d -p 5056:5056 --name=registro-ventas --network rasa-network -e SECRET_KEY="${{ secrets.SECRET_KEY }}" -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.REGISTRO_VENTAS_ECR_REPOSITORY }}:latest
+      # - name: Registro Ventas Containes
+      #   run: |
+      #     docker run -d -p 5056:5056 --name=registro-ventas --network rasa-network -e SECRET_KEY="${{ secrets.SECRET_KEY }}" -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' -e 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' -e 'AWS_REGION=${{ secrets.AWS_REGION }}'  ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.REGISTRO_VENTAS_ECR_REPOSITORY }}:latest
 
       - name: Clean previous images and containers
         run: |
