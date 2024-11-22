@@ -3,3 +3,5 @@ gspread
 numpy
 pandas
 boto3
+Levenshtein==0.25.1
+pytz

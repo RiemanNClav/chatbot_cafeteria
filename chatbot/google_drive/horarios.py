@@ -2,6 +2,7 @@ import os
 import re 
 from datetime import datetime, timedelta
 from dataclasses import dataclass
+import pytz
 
 
 @dataclass
@@ -23,11 +24,15 @@ class Horarios:
                 return lineas
         
         def fecha_actual(self):
+                utc = pytz.utc
+                cdmx_tz = pytz.timezone("America/Mexico_City")
+                utc_now = datetime.now(utc)
+                cdmx_time = utc_now.astimezone(cdmx_tz)
                 
-                hora_actual = datetime.now()
-                dia_despues = hora_actual - timedelta(days=1)
-                hora_actual2 = hora_actual.strftime("%H:%M")
-                fecha_actual = hora_actual.strftime("%Y-%m-%d")
+                # hora_actual = datetime.now()
+                dia_despues = cdmx_time - timedelta(days=1)
+                hora_actual2 = cdmx_time.strftime("%H:%M")
+                fecha_actual = cdmx_time.strftime("%Y-%m-%d")
 
                 dicc = {
                         'Monday': 'lunes',
@@ -39,11 +44,11 @@ class Horarios:
                         'Sunday': 'domingo'}
                 
                 dia_despues = int(dia_despues.strftime("%Y-%m-%d").split('-')[2])
-                fecha_actual = hora_actual.strftime("%Y-%m-%d")
+                fecha_actual = cdmx_time.strftime("%Y-%m-%d")
                 dia_actual = int(fecha_actual.split('-')[2])
                 mes_actual = int(fecha_actual.split('-')[1])
                 
-                nombre_dia_actual = hora_actual.strftime("%A")
+                nombre_dia_actual = cdmx_time.strftime("%A")
                 nombre_dia = dicc[nombre_dia_actual]
 
                 return fecha_actual, dia_actual, nombre_dia, mes_actual, hora_actual2, dia_despues

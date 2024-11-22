@@ -120,6 +120,11 @@ slots:
     mappings:
       - type: custom
 
+  validar_servicio:
+    type: text
+    mappings:
+      - type: custom
+
 
 responses:
 
