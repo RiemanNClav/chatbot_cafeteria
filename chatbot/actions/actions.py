@@ -9,14 +9,15 @@ from datetime import datetime, timedelta
 import uuid
 import requests
 import pandas as pd
-import os
+import Levenshtein
+import pytz
 
 
 ##MODULOS
 ##---------------------------------------------------##
 from google_drive.preprocesamiento_sheets import GoogleDrive, GoogleSheet, InsertData
 from google_drive.horarios import Horarios
-from mensajes_automatizados.mensajes import MensajesAutomatizados
+from mensajes import MensajesAutomatizados
 ##---------------------------------------------------##
 
 clase_google_drive = GoogleDrive()
@@ -47,20 +48,20 @@ class ActionGetHorario(Action):
         horario_habitual = dicc["horario_habitual"]
 
 
-        response = "HORARIO HABITUAL\n"
+        response = "*HORARIO HABITUAL*\n"
         request_horario_habitual = horario_habitual
         for resp in request_horario_habitual:
             response += f"{resp}\n"
 
         if particulares == ['2']:
-            response += "HORARIO PARTICULAR\n"
+            response += "*HORARIO PARTICULAR*\n"
             request_horario_particular = horario_particular
             for resp in request_horario_particular:
                 response += f"{resp}\n"
             
         response += '\n'
 
-        response += "Realiza tu pedido escribiendo 'hacer pedido', de lo contrario consulta otra opción del panel."
+        response += "Realiza tu pedido escribiendo *Hacer pedido*, de lo contrario consulta otra opción del panel."
 
         dispatcher.utter_message(text=response)
 
@@ -91,16 +92,18 @@ class ActionValidarPreferencia(Action):
             disponiblidad += "\n"
             disponiblidad += "¿Quieres programar tu pedido para una hora en particular o pedirlo para entrega inmediata?\n"
             disponiblidad += "Escribe *Programar* o *Inmediato*"
+            validar_servicio=True
         else:
             if botton2 == 1:
                 disponiblidad = f"Aun no tenemos servicio,  te recordamos que nuestro horario es de {dia}, gracias"
             elif botton2 == 2:
                 disponiblidad = f"Lo siento, ya hemos cerrado, te recordamos que nuestro servicio fue de {dia}, gracias"
+            validar_servicio=False
 
 
         dispatcher.utter_message(text=disponiblidad)
 
-        return [SlotSet("programar", None), SlotSet("inmediato", None), SlotSet("telefono", None),  SlotSet("correo", None) ,SlotSet("hora", None)]
+        return [SlotSet("programar", None), SlotSet("inmediato", None), SlotSet("telefono", None),  SlotSet("correo", None) , SlotSet("hora", None), SlotSet("validar_servicio", validar_servicio)]
     
 
 
@@ -177,10 +180,15 @@ class ActionRegistroLink(Action):
     
     def fecha_actual(self):
 
-        fecha = datetime.now()
-        fecha_str = fecha.strftime("%Y-%m-%d")
+        utc = pytz.utc
+        cdmx_tz = pytz.timezone("America/Mexico_City")
+        utc_now = datetime.now(utc)
+        cdmx_time = utc_now.astimezone(cdmx_tz)
+
+        # fecha = datetime.now()
+        fecha_str = cdmx_time.strftime("%Y-%m-%d")
                 
-        hora_str = str(fecha.strftime("%H:%M").replace(':', '.'))
+        hora_str = str(cdmx_time.strftime("%H:%M").replace(':', '.'))
         hora_float = float(hora_str)
 
 
@@ -196,7 +204,7 @@ class ActionRegistroLink(Action):
         return id_uuid
     
     def request_enviar(self, id_registro_venta, token_sesion):
-        url = "http://registro-ventas:5056/guardar_token"
+        url = "https://2d06-2806-2a0-1220-8638-c79-7747-3bd9-a733.ngrok-free.app/guardar_token"
         data = {
             "id_registro_venta": id_registro_venta,
             "token_sesion": token_sesion
@@ -230,12 +238,13 @@ class ActionRegistroLink(Action):
         recoger_enviar = tracker.get_slot("recoger_enviar")
         telefono = tracker.get_slot("telefono")
         correo = tracker.get_slot("correo")
+        validar_servicio = tracker.get_slot("validar_servicio")
 
         filtro_seguridad2 = True
         if (recoger_enviar == None)  or (telefono == None) or  (correo == None):
             filtro_seguridad2 = False
 
-        if filtro_seguridad2 == True and filtro_seguridad1 == True:
+        if filtro_seguridad2 == True and filtro_seguridad1 == True and validar_servicio == True:
 
             token = str(uuid.uuid4())
             numero_registro = self.numeros_aleatorios()
@@ -255,16 +264,16 @@ class ActionRegistroLink(Action):
 
             try:
                 enlace = self.request_enviar(id_registro_venta, token)
-                response = f"Ingresa al siguinte enlace {enlace}, por favor llénalo.\n"
+                response = f"Ingresa al siguiente enlace {enlace}, por favor llénalo.\n"
                 response += "Una vez completado, escribe *Registrado*, asi podremos confirmarlo."
                 response += "\n"
-                response += f"(Aveces pueden haber errores debido al internet, si llegaste hasta *Confirmar Pedido* y te salió error, con confianza escribre Rregistrado* y nos pondremos en contacto contigo.')"
+                response += f"(Aveces pueden haber errores debido al internet, si llegaste hasta *Confirmar Pedido* y te salió error, con confianza escribre *Registrado* y nos pondremos en contacto contigo)"
 
                 dispatcher.utter_message(text=response)
 
                 response = "CONSIDERACIONES"
                 response += "\n"
-                response += "1. El link solo permite un click, si apretaste y saliste sin completar, tendrás que volver a ingresar tu número "
+                response += "1. El link solo permite un click, si apretaste y saliste sin completar, tendrás que volver a *Ingresar tu número* "
                 response += "\n"
                 response += "2. Si tuviste algun problema accediendo al link, o algo no salio bien, escribe *Problema* "
                 dispatcher.utter_message(text=response)
@@ -293,8 +302,14 @@ class ActionSaveData(Action):
     
 
     def obtener_hora_menos_30_min(self):
-        hora_actual = datetime.now()
-        nueva_hora = hora_actual + timedelta(minutes=30)
+
+        utc = pytz.utc
+        cdmx_tz = pytz.timezone("America/Mexico_City")
+        utc_now = datetime.now(utc)
+        cdmx_time = utc_now.astimezone(cdmx_tz)
+
+        # hora_actual = datetime.now()
+        nueva_hora = cdmx_time + timedelta(minutes=30)
 
         hora = int(nueva_hora.strftime("%H:%M").split(':')[0])
 
@@ -308,12 +323,28 @@ class ActionSaveData(Action):
         
 
     def fecha_actual(self):
-        fecha = datetime.now()
+        utc = pytz.utc
+        cdmx_tz = pytz.timezone("America/Mexico_City")
+        utc_now = datetime.now(utc)
+        cdmx_time = utc_now.astimezone(cdmx_tz)
                 
-        hora_str = str(fecha.strftime("%H:%M").replace(':', '.'))
+        hora_str = str(cdmx_time.strftime("%H:%M").replace(':', '.'))
         hora_float = float(hora_str)
 
         return hora_float
+    
+    def categoria_mas_parecida(self, cadena, lista_categorias):
+        categoria_parecida = None
+        distancia_minima = float('inf')
+        
+        for categoria in lista_categorias:
+            distancia = Levenshtein.distance(cadena, categoria)
+            
+            if distancia < distancia_minima:
+                distancia_minima = distancia
+                categoria_parecida = categoria
+                
+        return categoria_parecida
         
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
@@ -331,9 +362,10 @@ class ActionSaveData(Action):
         registro_ventas = sheets["registro_ventas"]
         clase_google_sheet = GoogleSheet(registro_ventas)
 
-        ## PARA UNA SOLUCIÓN MAS PERRA USAR LEVENSHTEIN AQUI
 
-        if confirmacion.lower() == "registrado":
+        registrado_levenshtein = self.categoria_mas_parecida(confirmacion.lower(), ["registrado", "problema"])
+
+        if registrado_levenshtein == "registrado":
 
             hoja1 = registro_ventas
             hoja1 = hoja1.get_all_values()
@@ -359,7 +391,7 @@ class ActionSaveData(Action):
                 inmediato = tracker.get_slot("inmediato")
 
                 if inmediato == None:
-                    response += f"Si no recibes tu pedido en un tiempo a lo mas de 30 min después de la hora programada, tu siguente compra es gratis!!"
+                    response += f"Si no recibes tu pedido en un tiempo a lo más de 30 min después de la hora programada, tu siguente compra es gratis!!"
                 else:
                     response += f"si no recibes tu pedido antes de las {self.obtener_hora_menos_30_min()}, (siempre y cuando haya sido aceptado)  tu siguiente compra es gratis\n"
                 response += f"\n"
@@ -378,6 +410,10 @@ class ActionSaveData(Action):
                 df["token"] = df["token_sesion"].apply(lambda x: x.split('_')[0])
                 filter = df[df["token"] == token_sesion].drop(["token_sesion", "token"], axis=1)
                 ticket_personalizacion = filter.to_dict(orient='records')
+
+                data2 = registro_ventas.get_all_records()
+                df2 = pd.DataFrame(data2)
+                direccion = df2[df2["token_sesion"] == token_sesion ]["direccion"].iloc[0]
 
 
                 FILE_NAME = f"{id_registro_venta}.txt"
@@ -411,7 +447,8 @@ class ActionSaveData(Action):
                                 "Nombre": nombre_,
                                 "Correo": correo,
                                 "Elección del cliente": mensaje_eleccion,
-                                "Preferencia del cliente": mensaje_preferencia}
+                                "Preferencia del cliente": mensaje_preferencia,
+                                "Dirección": direccion}
         
                 
                 clase = MensajesAutomatizados(FILE_NAME)
