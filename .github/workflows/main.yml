@@ -116,9 +116,9 @@ jobs:
         run: |
           docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.ACTIONS_ECR_REPOSITORY }}:latest
 
-      - name: Pull latest Registro Ventas image
-        run: |
-          docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.REGISTRO_VENTAS_ECR_REPOSITORY }}:latest
+      # - name: Pull latest Registro Ventas image
+      #   run: |
+      #     docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{ secrets.REGISTRO_VENTAS_ECR_REPOSITORY }}:latest
 
       # Run Docker containers
       - name: Run Rasa Server Container
