@@ -232,6 +232,7 @@ class ActionRegistroLink(Action):
         inmediato = tracker.get_slot("inmediato")
         
         filtro_seguridad1 = True
+        validar_servicio = tracker.get_slot("validar_servicio")
         if validar_servicio == True:
             if programar == None and inmediato == None:
                 filtro_seguridad1 = False
@@ -239,7 +240,7 @@ class ActionRegistroLink(Action):
             recoger_enviar = tracker.get_slot("recoger_enviar")
             telefono = tracker.get_slot("telefono")
             correo = tracker.get_slot("correo")
-            validar_servicio = tracker.get_slot("validar_servicio")
+            
 
             filtro_seguridad2 = True
             if (recoger_enviar == None)  or (telefono == None) or  (correo == None):
