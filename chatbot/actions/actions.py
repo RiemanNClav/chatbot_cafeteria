@@ -115,8 +115,8 @@ class ActionProgramarPedido(Action):
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
         disponiblidad = "Increíble, especifica la hora, utilizando el siguiente formato.\n"
-        disponiblidad += "Ej. Horarios antes de las 12pm: 10:30, 11:15, ... \n"
-        disponiblidad += "Ej. Horarios antes de las 12pm: 10:30, 11:15, ... \n"
+        disponiblidad += "Ej. Horarios antes de las 12pm: 10:30, 11:15, 9:10 ... \n"
+        disponiblidad += "Ej. Horarios después de las 12pm: 13:06, 18:43, ... \n"
 
 
         dispatcher.utter_message(text=disponiblidad)
@@ -204,7 +204,7 @@ class ActionRegistroLink(Action):
         return id_uuid
     
     def request_enviar(self, id_registro_venta, token_sesion):
-        url = "https://2d06-2806-2a0-1220-8638-c79-7747-3bd9-a733.ngrok-free.app/guardar_token"
+        url = "https://976e-2806-2a0-1220-8638-d954-9d44-513a-d84c.ngrok-free.app/guardar_token"
         data = {
             "id_registro_venta": id_registro_venta,
             "token_sesion": token_sesion
@@ -232,61 +232,66 @@ class ActionRegistroLink(Action):
         inmediato = tracker.get_slot("inmediato")
         
         filtro_seguridad1 = True
-        if programar == None and inmediato == None:
-            filtro_seguridad1 = False
-        
-        recoger_enviar = tracker.get_slot("recoger_enviar")
-        telefono = tracker.get_slot("telefono")
-        correo = tracker.get_slot("correo")
-        validar_servicio = tracker.get_slot("validar_servicio")
-
-        filtro_seguridad2 = True
-        if (recoger_enviar == None)  or (telefono == None) or  (correo == None):
-            filtro_seguridad2 = False
-
-        if filtro_seguridad2 == True and filtro_seguridad1 == True and validar_servicio == True:
-
-            token = str(uuid.uuid4())
-            numero_registro = self.numeros_aleatorios()
-            fecha_registro, hora_registro = self.fecha_actual()
-
-            id_registro_venta = str(numero_registro) + "-" + telefono[-4:] + '-' + str(hora_registro).replace('.', '')
-            id_cliente = self.convertir_telefono_id(telefono)
-
-            values = [id_registro_venta, id_cliente, token, numero_registro, 
-                    " ", telefono, " ", fecha_registro, 
-                    hora_registro, " ", 1, " ", " ", " ", " ", " "]
+        if validar_servicio == True:
+            if programar == None and inmediato == None:
+                filtro_seguridad1 = False
             
-            registro_ventas = sheets["registro_ventas"]
-            clase_insert_data = InsertData(registro_ventas)
-            clase_insert_data.insert_data(values)
+            recoger_enviar = tracker.get_slot("recoger_enviar")
+            telefono = tracker.get_slot("telefono")
+            correo = tracker.get_slot("correo")
+            validar_servicio = tracker.get_slot("validar_servicio")
+
+            filtro_seguridad2 = True
+            if (recoger_enviar == None)  or (telefono == None) or  (correo == None):
+                filtro_seguridad2 = False
+
+            if filtro_seguridad2 == True and filtro_seguridad1 == True:
+
+                token = str(uuid.uuid4())
+                numero_registro = self.numeros_aleatorios()
+                fecha_registro, hora_registro = self.fecha_actual()
+
+                id_registro_venta = str(numero_registro) + "-" + telefono[-4:] + '-' + str(hora_registro).replace('.', '')
+                id_cliente = self.convertir_telefono_id(telefono)
+
+                values = [id_registro_venta, id_cliente, token, numero_registro, 
+                        " ", telefono, " ", fecha_registro, 
+                        hora_registro, " ", 1, " ", " ", " ", " ", " "]
+                
+                registro_ventas = sheets["registro_ventas"]
+                clase_insert_data = InsertData(registro_ventas)
+                clase_insert_data.insert_data(values)
 
 
-            try:
-                enlace = self.request_enviar(id_registro_venta, token)
-                response = f"Ingresa al siguiente enlace {enlace}, por favor llénalo.\n"
-                response += "Una vez completado, escribe *Registrado*, asi podremos confirmarlo."
-                response += "\n"
-                response += f"(Aveces pueden haber errores debido al internet, si llegaste hasta *Confirmar Pedido* y te salió error, con confianza escribre *Registrado* y nos pondremos en contacto contigo)"
+                try:
+                    enlace = self.request_enviar(id_registro_venta, token)
+                    response = f"Ingresa al siguiente enlace {enlace}, por favor llénalo.\n"
+                    response += "Una vez completado, escribe *Registrado*, asi podremos confirmarlo."
+                    response += "\n"
+                    response += f"(Aveces pueden haber errores debido al internet, si llegaste hasta *Confirmar Pedido* y te salió error, con confianza escribre *Registrado* y nos pondremos en contacto contigo)"
 
-                dispatcher.utter_message(text=response)
+                    dispatcher.utter_message(text=response)
 
-                response = "CONSIDERACIONES"
-                response += "\n"
-                response += "1. El link solo permite un click, si apretaste y saliste sin completar, tendrás que volver a *Ingresar tu número* "
-                response += "\n"
-                response += "2. Si tuviste algun problema accediendo al link, o algo no salio bien, escribe *Problema* "
-                dispatcher.utter_message(text=response)
+                    response = "CONSIDERACIONES"
+                    response += "\n"
+                    response += "1. El link solo permite un click, si apretaste y saliste sin completar, tendrás que volver a *Ingresar tu número* "
+                    response += "\n"
+                    response += "2. Si tuviste algun problema accediendo al link, o algo no salio bien, escribe *Problema* "
+                    dispatcher.utter_message(text=response)
 
-                validar_enlace = True
-                if enlace == None:
-                    validar_enlace = None
+                    validar_enlace = True
+                    if enlace == None:
+                        validar_enlace = None
 
-                return [SlotSet("id_registro_venta", id_registro_venta), SlotSet("fecha_registro", fecha_registro), SlotSet("hora_registro", hora_registro), SlotSet("token", token), SlotSet("validar_enlace", validar_enlace)]
-            
-            except Exception as e:
-                print(f"Error en la acción personalizada: {e}")
-                response = "Ha habido un problema, vuelve a ingresar tu número porfavor."
+                    return [SlotSet("id_registro_venta", id_registro_venta), SlotSet("fecha_registro", fecha_registro), SlotSet("hora_registro", hora_registro), SlotSet("token", token), SlotSet("validar_enlace", validar_enlace)]
+                
+                except Exception as e:
+                    print(f"Error en la acción personalizada: {e}")
+                    response = "Ha habido un problema, vuelve a ingresar tu número porfavor."
+                    dispatcher.utter_message(text=response)
+                    return []
+            else:
+                response = "No hemos registrado todos los datos necesarios para tu compra, escribe *Hacer pedido* y registralos porfavor!"
                 dispatcher.utter_message(text=response)
                 return []
         else:
