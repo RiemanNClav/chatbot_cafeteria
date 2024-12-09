@@ -11,6 +11,8 @@ import requests
 import pandas as pd
 import Levenshtein
 import pytz
+import yaml
+
 
 
 ##MODULOS
@@ -18,6 +20,7 @@ import pytz
 from google_drive.preprocesamiento_sheets import GoogleDrive, GoogleSheet, InsertData
 from google_drive.horarios import Horarios
 from mensajes import MensajesAutomatizados
+from facturas.generarFactura import generar_factura, enviar_factura_por_correo
 ##---------------------------------------------------##
 
 clase_google_drive = GoogleDrive()
@@ -204,7 +207,7 @@ class ActionRegistroLink(Action):
         return id_uuid
     
     def request_enviar(self, id_registro_venta, token_sesion):
-        url = "https://976e-2806-2a0-1220-8638-d954-9d44-513a-d84c.ngrok-free.app/guardar_token"
+        url = "https://b730-2806-2a0-1220-8638-90b9-fd10-deaa-9835.ngrok-free.app/guardar_token"
         data = {
             "id_registro_venta": id_registro_venta,
             "token_sesion": token_sesion
@@ -358,8 +361,11 @@ class ActionSaveData(Action):
         confirmacion = tracker.get_slot("numero")
         telefono = tracker.get_slot("telefono")
         id_registro_venta = tracker.get_slot("id_registro_venta")
+        dicc1 = None
+        dicc2 = None
 
         validar_correo = tracker.get_slot("validar_correo")
+        validar_factura = None
         correo = validar_correo
         if validar_correo == None:
             correo = tracker.get_slot("correo")
@@ -370,6 +376,12 @@ class ActionSaveData(Action):
 
 
         registrado_levenshtein = self.categoria_mas_parecida(confirmacion.lower(), ["registrado", "problema"])
+
+        with open("credentials.yml", "r") as file:
+            config = yaml.safe_load(file)
+            telegram_token = config.get("Telegram", {}).get("telegram_token", "")
+            chat_id = config.get("Telegram", {}).get("chat_id", "")
+            password = config.get("Password", {}).get("password", "")
 
         if registrado_levenshtein == "registrado":
 
@@ -397,9 +409,9 @@ class ActionSaveData(Action):
                 inmediato = tracker.get_slot("inmediato")
 
                 if inmediato == None:
-                    response += f"Si no recibes tu pedido en un tiempo a lo más de 30 min después de la hora programada, tu siguente compra es gratis!!"
+                    response += f"Si no recibes tu pedido en un tiempo a lo más de 30 min después de la hora programada, tu siguente compra es gratis!!\n"
                 else:
-                    response += f"si no recibes tu pedido antes de las {self.obtener_hora_menos_30_min()}, (siempre y cuando haya sido aceptado)  tu siguiente compra es gratis\n"
+                    response += f"Si no recibes tu pedido antes de las {self.obtener_hora_menos_30_min()} tu siguiente compra es gratis\n"
                 response += f"\n"
 
                 nombre_ = nombre
@@ -419,7 +431,10 @@ class ActionSaveData(Action):
 
                 data2 = registro_ventas.get_all_records()
                 df2 = pd.DataFrame(data2)
-                direccion = df2[df2["token_sesion"] == token_sesion ]["direccion"].iloc[0]
+                filter2 = df2[df2["token_sesion"] == token_sesion ][["direccion", "total"]]
+                
+                direccion = filter2['direccion'].iloc[0]
+                total = filter2['total'].iloc[0]
 
 
                 FILE_NAME = f"{id_registro_venta}.txt"
@@ -429,50 +444,56 @@ class ActionSaveData(Action):
 
                 if inmediato == None:
                     hora= tracker.get_slot("hora")
-                    mensaje_eleccion = f"Quiere su pedido programado para la siguiente hora: {hora}"
+                    mensaje_eleccion = f"Hora pedido programado {hora}"
                     if preferencia == "enviar":
-                        mensaje_preferencia = "Quiere se que le envie el pedido para esa hora"
+                        mensaje_preferencia = "Enviar pedido programado"
 
                     else:
-                        mensaje_preferencia = "Pasará a recoger su pedido a esa hora"
+                        mensaje_preferencia = "Recogerá su pedido programado"
 
                 else:
-                    mensaje_eleccion = f"Ordenó su pedido para entrega inmediata"
+                    mensaje_eleccion = f"Entrega inmediata"
                     if preferencia == "enviar":
-                            mensaje_preferencia = "Quiere se que le envie el pedido en cuanto antes"
+                            mensaje_preferencia = "Enviar pedido inmediato"
                     else: 
-                            mensaje_preferencia = "Quiere recoger su pedido en cuanto antes"
+                            mensaje_preferencia = "Recogerá su pedido en cuanto antes"
 
 
 
                 ticket_data = {
                                 "id_registro_venta": id_registro_venta,
                                 "Fecha de registro": fecha_registro,
-                                "Hora de registro": hora_registro,
                                 "Hora de confirmación": fecha_actual,
                                 "Nombre": nombre_,
                                 "Correo": correo,
-                                "Elección del cliente": mensaje_eleccion,
-                                "Preferencia del cliente": mensaje_preferencia,
+                                "Telefono": telefono,
+                                "Elección de Entrega": mensaje_eleccion,
+                                "Preferencia de Entrega": mensaje_preferencia,
                                 "Dirección": direccion}
         
                 
                 clase = MensajesAutomatizados(FILE_NAME)
-                clase.enviar(ticket_data, ticket_personalizacion, nombre, telefono_)
+                clase.enviar(ticket_data, ticket_personalizacion, nombre, telefono_, "Efectivo", total, telegram_token, chat_id)
+
+                dicc1 = ticket_data
+                dicc2 = ticket_personalizacion
+
+                response += f"Tu Ticket de compra es el siguiente: Hola\n"
+                response += "\n"
+                response += f"Si requieres factura, porfavor escribir *factura* y en breve te la haremos llegar."
+                validar_factura = True
+
                 nombre_validar = tracker.get_slot("nombre_validar") 
                 clientes = sheets["clientes"]
 
                 if nombre_validar == False:
                     clase_insert_data = InsertData(clientes)
                     procedencia_ = "Chatbot"
-                    values = [nombre_, telefono_, correo, procedencia_]
+                    values = ["", nombre_, telefono_, correo, "", procedencia_]
                     clase_insert_data.insert_data(values)
                 else:
                     clase_google_sheet = GoogleSheet(clientes)
                     clase_google_sheet.update_cell_by_id(telefono_, "nombre", nombre)
-
-                
-
 
 
             else:
@@ -490,10 +511,55 @@ class ActionSaveData(Action):
             
             clase = MensajesAutomatizados(FILE_NAME)
             ticket_personalizacion = {}
-            clase.enviar(ticket_data, ticket_personalizacion,  "PROBLEMAS", telefono)
+            clase.enviar(ticket_data, ticket_personalizacion,  "PROBLEMAS", telefono, "NA", "NA", telegram_token, chat_id)
+            # response += f"Tu ticket es el siguiente: {ticket}"
 
             response = "En breve se comunicarán contigo, gracias por la espera!."
 
+        dispatcher.utter_message(text=response)
+        return [SlotSet("programar", None), SlotSet("inmediato", None), SlotSet("telefono", None),  SlotSet("correo", None) ,SlotSet("hora", None), SlotSet("validar_factura", validar_factura), SlotSet("dicc1", dicc1), SlotSet("dicc2", dicc2), SlotSet("password", password)]
+    
+    # -----------------------------------------------------------------------------------------------------------------------------------------
+
+class ActionRegistroCorreoElectronico(Action):
+
+    def name(self) -> Text:
+        return "action_factura"
+    
+    
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        validar_factura = tracker.get_slot("validar_factura")
+
+        if validar_factura == True:
+
+            ticket_data = tracker.get_slot("dicc1")
+            
+            fecha = ticket_data["Fecha de registro"]
+
+
+            ticket_data = {
+                "Num. Venta": ticket_data["id_registro_venta"],
+                "Nombre Cliente": ticket_data["Nombre"],
+                "Correo Electronico": ticket_data["Correo"],
+                "Teléfono": ticket_data["Telefono"],
+            }
+
+            ticket_productos = tracker.get_slot("dicc2")
+            
+            password = tracker.get_slot("password")
+  
+            pdf_buffer = generar_factura(ticket_data, ticket_productos, fecha)
+            enviar_factura_por_correo(ticket_data, pdf_buffer, password)
+            
+            response = "Se te ha enviado tu Factura por Correo Electrónico\n"
+            response += "Si tienes algun problema para acceder, no te haya llegado el correo, lo que sea que este sucediendo\n"
+            response += "comunicate directamente con nosotros y en breve nos pondremos en contacto contigo: +525565637294"
+
+        else:
+            response = "No tenemos ningun registro de tu pedido, favor de escribir tu *Correo Electrónico*"
 
         dispatcher.utter_message(text=response)
-        return [SlotSet("programar", None), SlotSet("inmediato", None), SlotSet("telefono", None),  SlotSet("correo", None) ,SlotSet("hora", None)]
+        return [SlotSet("validar_factura", None), SlotSet("dicc1", None), SlotSet("dicc2", None)]
+
+        
