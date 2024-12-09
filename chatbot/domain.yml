@@ -13,6 +13,7 @@ intents:
   - intent_registro_numero_registro
   - intent_validar_preferencia_inmediato
   - intent_preferencia_recoger_enviar_pedido
+  - intent_factura
 
 
 
@@ -125,11 +126,30 @@ slots:
     mappings:
       - type: custom
 
+  validar_factura:
+    type: text
+    mappings:
+      - type: custom
+
+  password:
+    type: text
+    mappings:
+      - type: custom
+
+  dicc1:
+    type: any
+    mappings:
+      - type: custom
+  dicc2:
+    type: any
+    mappings:
+      - type: custom
 
 responses:
 
   utter_inicio_panel:
-    - text: "Hola, un gusto saludarte, Bienvenido a Tory Cafe, ¿En qué puedo ayudarte?\n
+    - text: "https://drive.google.com/uc?id=1MW7h9v30YYPFjwvvZPnr8-DX2eZv7u5L
+            Hola, un gusto saludarte, Bienvenido a Tory Cafe, ¿En qué puedo ayudarte?\n
             Escribe alguna de las siguientes 4 opciones del panel:\n
             1. Ver menu\n
             2. Hacer pedido\n
@@ -163,6 +183,7 @@ responses:
   utter_preferencia_pedido_inmediato:
   - text: "¿Prefieres tu pasar a recogerlo o que nosotros te lo enviemos?\n
            Escribe *Yo paso* o *Ustedes*"
+
   utter_programar_pedido:
   - text: "Increíble, especifica la hora, utilizando el siguiente formato.\n
            Ej. Horarios antes de las 12pm: 10:30, 11:15, ... \n
@@ -176,6 +197,7 @@ actions:
   - action_save_data: {send_domain: True}
   - action_get_horario: {send_domain: True}
   - action_programar_pedido: {send_domain: True}
+  - action_factura: {send_domain: True}
 
 session_config:
   session_expiration_time: 60

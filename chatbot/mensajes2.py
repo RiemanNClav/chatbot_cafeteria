@@ -1,32 +1,8 @@
-import requests
 import io
-import yaml
-
 
 class MensajesAutomatizados:
     def __init__(self, nombre_ticket):
         self.n = nombre_ticket
-
-    def enviar_archivo_telegram(self, file_content, nombre, telefono, TELEGRAM_TOKEN, CHAT_ID):
-        """Envía un archivo de texto a Telegram como documento sin guardarlo en el sistema."""
-        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
-        try:
-            # Convertir el contenido a un archivo en memoria
-            file_in_memory = io.BytesIO(file_content.encode('utf-8'))
-            file_in_memory.name = self.n  # Nombre del archivo para Telegram
-
-            files = {'document': file_in_memory}
-            data = {'chat_id': CHAT_ID, 'caption': f'📄{nombre}-{telefono}.'}
-            response = requests.post(url, data=data, files=files)
-
-            if response.status_code == 200:
-                print("✅ Archivo enviado exitosamente a Telegram")
-            else:
-                print(f"⚠️ Error al enviar archivo a Telegram: {response.status_code}, {response.text}")
-
-        except Exception as e:
-            print(f"Error enviando archivo: {e}")
-
 
     def generar_ticket_en_memoria(self, ticket_data, ticket_bebidas, forma_pago, total):
         """Genera el contenido del ticket como un archivo de texto en memoria."""
@@ -60,13 +36,13 @@ class MensajesAutomatizados:
                 contenido.append("-------------------------------------")
             else:
                 contenido.append(f"       No hay {titulo[:-1].lower()}s")
-                contenido.append("------------------------------------------------")
+                contenido.append("-------------------------------------")
 
         agregar_registro(contenido, "Registro de Bebidas", registros_bebidas)
         agregar_registro(contenido, "Registro de Alimentos", registros_alimentos)
         agregar_registro(contenido, "Registro de Promociones", registros_promociones)
 
-        contenido.append(f"            TOTAL = {total} MXN")
+        contenido.append(f"TOTAL = {total} MXN")
         contenido.append("-----------------------------------------------")
         contenido.append(f"          Forma de pago: {forma_pago}")
         contenido.append(f"          Vendedor: Tory Cafe")
@@ -75,12 +51,27 @@ class MensajesAutomatizados:
         contenido.append(f"          No hay devoluciones")
 
         return "\n".join(contenido)
-    
 
+    def enviar_archivo(self, file_content):
+        """
+        Devuelve el archivo en memoria (BytesIO) que puede ser usado como texto adjunto en un mensaje.
+        """
+        try:
+            file_in_memory = io.BytesIO(file_content.encode('utf-8'))
+            file_in_memory.name = f"{self.n}.txt"  # Asignar nombre al archivo
+            return file_in_memory
+        except Exception as e:
+            print(f"Error enviando archivo: {e}")
+            return None
 
-    def enviar(self, ticket_data, ticket_bebidas, nombre, telefono, forma_pago, total, TELEGRAM_TOKEN, CHAT_ID):
+    def enviar(self, ticket_data, ticket_bebidas, nombre, telefono, forma_pago, total):
+        """
+        Genera y devuelve el archivo en memoria para ser enviado como parte de un mensaje.
+        """
         contenido_ticket = self.generar_ticket_en_memoria(ticket_data, ticket_bebidas, forma_pago, total)
-        self.enviar_archivo_telegram(contenido_ticket, nombre, telefono, TELEGRAM_TOKEN, CHAT_ID)
+        archivo_en_memoria = self.enviar_archivo(contenido_ticket)
+        return archivo_en_memoria
+
 
 if __name__ == '__main__':
     # Datos de ejemplo para el ticket
@@ -100,11 +91,4 @@ if __name__ == '__main__':
     ]
 
     clase = MensajesAutomatizados("316-2552-1401.txt")
-
-    with open("credentials.yml", "r") as file:
-        config = yaml.safe_load(file)
-
-    telegram_token = config.get("Telegram", {}).get("telegram_token", "")
-    chat_id = config.get("Telegram", {}).get("chat_id", "")
-    clase.enviar(ticket_data, ticket_bebidas, "Angel Uriel", "5565637294", "Efectivo", "total", telegram_token, chat_id)
-
+    clase.enviar(ticket_data, ticket_bebidas, "Angel Uriel", "5565637294")
