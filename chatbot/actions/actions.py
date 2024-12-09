@@ -379,9 +379,9 @@ class ActionSaveData(Action):
 
         with open("credentials.yml", "r") as file:
             config = yaml.safe_load(file)
-            telegram_token = config.get("Telegram", {}).get("telegram_token", "")
-            chat_id = config.get("Telegram", {}).get("chat_id", "")
-            password = config.get("Password", {}).get("password", "")
+            telegram_token = config.get("telegram", {}).get("telegram_token", "")
+            chat_id = config.get("telegram", {}).get("chat_id", "")
+            password = config.get("password", {}).get("password", "")
 
         if registrado_levenshtein == "registrado":
 
