@@ -286,8 +286,6 @@ nlu:
     - [proble](numero)
 
 
-
-
 - intent: intent_horario
   examples: |
     - ver horarios
@@ -322,3 +320,12 @@ nlu:
     - Pagos
     - pagos
     - PAGOS
+
+- intent: intent_factura
+  examples: |
+    - factura
+    - FACTURA
+    - Factura
+    - Fact
+    - factu
+    - FACT

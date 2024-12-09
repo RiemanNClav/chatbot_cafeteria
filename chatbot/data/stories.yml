@@ -38,6 +38,9 @@ stories:
         - numero
     - action: action_save_data
 
+    - intent: intent_factura                   
+    - action: action_factura    
+
 
 
 - story: historia_pedidoinmediato_menu_pedido
@@ -72,6 +75,10 @@ stories:
         - numero
     - action: action_save_data
 
+    - intent: intent_factura                   
+    - action: action_factura    
+
+
 
 # --------------------------------------------------------------------------------------------
 
@@ -88,6 +95,10 @@ stories:
     - intent: intent_horario
     - action: action_get_horario
 
+    - intent: intent_factura                   
+    - action: action_factura    
+
+
 
 
 
@@ -103,6 +114,10 @@ stories:
 
     - intent: intent_forma_pago
     - action: utter_forma_pago
+
+    - intent: intent_factura                   
+    - action: action_factura    
+
 
 
 # # --------------------------------------------------------------------------------------------

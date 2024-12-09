@@ -69,3 +69,8 @@ rules:
   steps:
   - intent: intent_registro_numero_registro
   - action: action_save_data
+
+- rule: regla_factura
+  steps:
+  - intent: intent_factura                   
+  - action: action_factura 
