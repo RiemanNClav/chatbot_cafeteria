@@ -24,6 +24,7 @@ stories:
     - intent: intent_preferencia_recoger_enviar_pedido
       entities:
         - recoger_eviar
+
     - action: utter_enviar_registro_numero_telefono                   
     - intent: intent_registro_telefono                                                  
       entities:
@@ -61,6 +62,7 @@ stories:
     - intent: intent_preferencia_recoger_enviar_pedido                                                
       entities:
         - recoger_eviar
+
     - action: utter_enviar_registro_numero_telefono
     - intent: intent_registro_telefono
       entities:
