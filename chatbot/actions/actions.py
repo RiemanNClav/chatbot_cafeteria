@@ -30,6 +30,32 @@ clase_horarios = Horarios()
 sheets = clase_google_drive.obtener_sheets()
 
 
+# Use this code snippet in your app.
+# If you need more information about configurations
+# or implementing the sample code, visit the AWS docs:
+# https://aws.amazon.com/developer/language/python/
+
+import boto3
+import json
+
+
+def credentials_from_secrets():
+    # Configuración de AWS Secrets Manager
+    client = boto3.client('secretsmanager', region_name='us-east-2')  # Ajusta la región
+    secret_name = 'secrets-chatbot'  # Nombre del secreto
+
+    # Obtener las credenciales del Secret Manager
+    response = client.get_secret_value(SecretId=secret_name)
+    secret = response['SecretString']
+    credentials_info = json.loads(secret)  # Parsear el JSON desde el secreto
+
+    return credentials_info
+
+
+    # Your code goes here.
+
+
+
 ## ------------------------------VER HORARIO----------------------------------  ya quedo
 class ActionGetHorario(Action):
 
@@ -377,11 +403,11 @@ class ActionSaveData(Action):
 
         registrado_levenshtein = self.categoria_mas_parecida(confirmacion.lower(), ["registrado", "problema"])
 
-        with open("secrets.yml", "r") as file:
-            config = yaml.safe_load(file)
-            telegram_token = config.get("telegram", {}).get("access_token", "")
-            chat_id = config.get("telegram", {}).get("chat_id", "")
-            password = config.get("password", {}).get("password", "")
+        # Recuperar secretos
+        secrets = credentials_from_secrets()
+        password = secrets['password']
+        telegram_token = secrets['telegram']['access_token']
+        chat_id = secrets['telegram']['chat_id']
 
         if registrado_levenshtein == "registrado":
 
