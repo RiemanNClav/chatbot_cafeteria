@@ -1,6 +1,8 @@
 import requests
 import io
 import yaml
+import os
+
 
 
 class MensajesAutomatizados:
@@ -101,10 +103,10 @@ if __name__ == '__main__':
 
     clase = MensajesAutomatizados("316-2552-1401.txt")
 
-    with open("credentials.yml", "r") as file:
-        config = yaml.safe_load(file)
 
-    telegram_token = config.get("Telegram", {}).get("telegram_token", "")
-    chat_id = config.get("Telegram", {}).get("chat_id", "")
+
+    secrets = credentials_from_secrets()
+    telegram_token = secrets['telegram']['access_token']
+    chat_id = secrets['telegram']['chat_id']
     clase.enviar(ticket_data, ticket_bebidas, "Angel Uriel", "5565637294", "Efectivo", "total", telegram_token, chat_id)
 
