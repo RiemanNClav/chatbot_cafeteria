@@ -15,8 +15,6 @@ intents:
   - intent_preferencia_recoger_enviar_pedido
   - intent_factura
 
-
-
 entities:
   - programar
   - hora
@@ -79,7 +77,6 @@ slots:
       - type: from_entity
         entity: inmediato
 
-
   preferencia_pedido:
     type: text
     mappings:
@@ -140,6 +137,7 @@ slots:
     type: any
     mappings:
       - type: custom
+
   dicc2:
     type: any
     mappings:
@@ -148,13 +146,13 @@ slots:
 responses:
 
   utter_inicio_panel:
-    - text: "https://drive.google.com/uc?id=1MW7h9v30YYPFjwvvZPnr8-DX2eZv7u5L
-            Hola, un gusto saludarte, Bienvenido a Tory Cafe, ¿En qué puedo ayudarte?\n
+    - text: "Hola, un gusto saludarte, Bienvenido a Tory Cafe, ¿En qué puedo ayudarte?\n
             Escribe alguna de las siguientes 4 opciones del panel:\n
             1. Ver menu\n
             2. Hacer pedido\n
             3. Ver horarios\n 
             4. Formas de pago\n"
+      image: "https://drive.google.com/uc?id=1MW7h9v30YYPFjwvvZPnr8-DX2eZv7u5L"
 
   utter_ver_horarios:
     - text: "Los horarios de atención son los siguientes:\n
@@ -189,6 +187,8 @@ responses:
            Ej. Horarios antes de las 12pm: 10:30, 11:15, ... \n
                 Horarios despues de las 12pm: 13:30, 18:40, ...."
 
+  utter_formas_pago:
+  - text: "¿Cual sería tu forma de pago?"
 
 actions:
   - action_validar_preferencia: {send_domain: True}

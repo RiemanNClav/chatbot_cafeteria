@@ -1,31 +1,86 @@
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+import requests
 import io
 
 class MensajesAutomatizados:
     def __init__(self, nombre_ticket):
         self.n = nombre_ticket
 
-    def generar_ticket_en_memoria(self, ticket_data, ticket_bebidas, forma_pago, total):
-        """Genera el contenido del ticket como un archivo de texto en memoria."""
+    def enviar_archivo_telegram(self, file_content, nombre, telefono, TELEGRAM_TOKEN, CHAT_ID):
+        """Envía un archivo de texto a Telegram como documento sin guardarlo en el sistema."""
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendDocument"
+        try:
+            file_in_memory = io.BytesIO(file_content.encode('utf-8'))
+            file_in_memory.name = self.n
+
+            files = {'document': file_in_memory}
+            data = {'chat_id': CHAT_ID, 'caption': f'📄{nombre}-{telefono}.'}
+            response = requests.post(url, data=data, files=files)
+
+            if response.status_code == 200:
+                print("✅ Archivo enviado exitosamente a Telegram")
+            else:
+                print(f"⚠️ Error al enviar archivo a Telegram: {response.status_code}, {response.text}")
+
+        except Exception as e:
+            print(f"Error enviando archivo: {e}")
+
+    def enviar_archivo_correo(self, file_content, destinatario_email, remitente_email, remitente_password):
+        """Envía el ticket por correo electrónico como un archivo adjunto."""
+        try:
+            # Crear el mensaje
+            mensaje = MIMEMultipart()
+            mensaje['From'] = remitente_email
+            mensaje['To'] = destinatario_email
+            mensaje['Subject'] = 'Tu ticket de compra - Tory Cafe'
+
+            # Agregar el cuerpo del correo
+            cuerpo = "Adjunto encontrarás tu ticket de compra. Muchas gracias por elegir Tory Cafe!"
+            mensaje.attach(MIMEText(cuerpo, 'plain'))
+
+            # Adjuntar el archivo
+            file_in_memory = io.BytesIO(file_content.encode('utf-8'))
+            file_in_memory.name = self.n
+
+            adjunto = MIMEBase('application', 'octet-stream')
+            adjunto.set_payload(file_in_memory.read())
+            encoders.encode_base64(adjunto)
+            adjunto.add_header('Content-Disposition', f'attachment; filename={self.n}')
+            mensaje.attach(adjunto)
+
+            # Conectar al servidor SMTP y enviar el correo
+            servidor = smtplib.SMTP('smtp.gmail.com', 587)
+            servidor.starttls()
+            servidor.login(remitente_email, remitente_password)
+            texto = mensaje.as_string()
+            servidor.sendmail(remitente_email, destinatario_email, texto)
+            servidor.quit()
+
+            print("✅ Ticket enviado exitosamente por correo electrónico")
+
+        except Exception as e:
+            print(f"Error enviando correo electrónico: {e}")
+
+    def generar_ticket_en_memoria(self, ticket_data, ticket_bebidas, total):
         contenido = []
 
-        # Encabezado del ticket
         contenido.append("                  Tory Cafe")
         contenido.append("   Poniente 128 #505, Col. Industrial Vallejo,")
         contenido.append("          Alcaldia Azcapotzalco, CDMX")
         contenido.append("-------------------------------------")
 
-
-        # Agregar datos generales del ticket
         for key, value in ticket_data.items():
             contenido.append(f"{key} = {value}")
         contenido.append("-------------------------------------")
 
-        # Clasificar los registros por tipo de producto
         registros_bebidas = [t for t in ticket_bebidas if t['producto'] == 'bebidas']
         registros_alimentos = [t for t in ticket_bebidas if t['producto'] == 'alimentos']
         registros_promociones = [t for t in ticket_bebidas if t['producto'] == 'promociones']
 
-        # Agregar registros clasificados
         def agregar_registro(contenido, titulo, registros):
             if registros:
                 contenido.append(f"           {titulo}")
@@ -36,15 +91,14 @@ class MensajesAutomatizados:
                 contenido.append("-------------------------------------")
             else:
                 contenido.append(f"       No hay {titulo[:-1].lower()}s")
-                contenido.append("-------------------------------------")
+                contenido.append("------------------------------------------------")
 
         agregar_registro(contenido, "Registro de Bebidas", registros_bebidas)
         agregar_registro(contenido, "Registro de Alimentos", registros_alimentos)
         agregar_registro(contenido, "Registro de Promociones", registros_promociones)
 
-        contenido.append(f"TOTAL = {total} MXN")
+        contenido.append(f"            TOTAL = {total} MXN")
         contenido.append("-----------------------------------------------")
-        contenido.append(f"          Forma de pago: {forma_pago}")
         contenido.append(f"          Vendedor: Tory Cafe")
         contenido.append(f"          Mesero: Tory Cafe")
         contenido.append(f"          Gracias por su compra!")
@@ -52,29 +106,12 @@ class MensajesAutomatizados:
 
         return "\n".join(contenido)
 
-    def enviar_archivo(self, file_content):
-        """
-        Devuelve el archivo en memoria (BytesIO) que puede ser usado como texto adjunto en un mensaje.
-        """
-        try:
-            file_in_memory = io.BytesIO(file_content.encode('utf-8'))
-            file_in_memory.name = f"{self.n}.txt"  # Asignar nombre al archivo
-            return file_in_memory
-        except Exception as e:
-            print(f"Error enviando archivo: {e}")
-            return None
-
-    def enviar(self, ticket_data, ticket_bebidas, nombre, telefono, forma_pago, total):
-        """
-        Genera y devuelve el archivo en memoria para ser enviado como parte de un mensaje.
-        """
-        contenido_ticket = self.generar_ticket_en_memoria(ticket_data, ticket_bebidas, forma_pago, total)
-        archivo_en_memoria = self.enviar_archivo(contenido_ticket)
-        return archivo_en_memoria
-
+    def enviar(self, ticket_data, ticket_bebidas, nombre, telefono, total, TELEGRAM_TOKEN, CHAT_ID, remitente_email, remitente_password, destinatario_email):
+        contenido_ticket = self.generar_ticket_en_memoria(ticket_data, ticket_bebidas, total)
+        self.enviar_archivo_telegram(contenido_ticket, nombre, telefono, TELEGRAM_TOKEN, CHAT_ID)
+        self.enviar_archivo_correo(contenido_ticket, destinatario_email, remitente_email, remitente_password)
 
 if __name__ == '__main__':
-    # Datos de ejemplo para el ticket
     ticket_data = {
         "id_registro_venta": "12345",
         "Fecha": "2024-11-13",
@@ -90,5 +127,12 @@ if __name__ == '__main__':
         {'producto': 'promociones', 'categoria': 'Bebidas Frias', 'subcategoria': 'Helado Shaken Lemon Black Tee', 'tipo_leche': 'Deslactosada', 'azucar_extra': 'Si', 'consideraciones': 'Mucha azúcar', 'precio': 7654}
     ]
 
-    clase = MensajesAutomatizados("316-2552-1401.txt")
-    clase.enviar(ticket_data, ticket_bebidas, "Angel Uriel", "5565637294")
+    clase = MensajesAutomatizados("ticket.txt")
+
+    telegram_token = "7767406051:AAEs306YQtgA-Dd5Bq4OMlnCFfJPFsYRWkc"
+    chat_id = "7355671533"
+    remitente_email = "angel.chavez.clavellina@gmail.com"
+    remitente_password = "qkgf zivf wlfa sgxy"
+    destinatario_email = "pyrat.solutions@gmail.com"
+
+    clase.enviar(ticket_data, ticket_bebidas, "Angel Uriel", "5565637294", "1000", telegram_token, chat_id, remitente_email, remitente_password, destinatario_email)
