@@ -11,8 +11,6 @@ import requests
 import pandas as pd
 import Levenshtein
 import pytz
-import yaml
-
 
 
 ##MODULOS
@@ -30,14 +28,8 @@ clase_horarios = Horarios()
 sheets = clase_google_drive.obtener_sheets()
 
 
-# Use this code snippet in your app.
-# If you need more information about configurations
-# or implementing the sample code, visit the AWS docs:
-# https://aws.amazon.com/developer/language/python/
-
 import boto3
 import json
-
 
 def credentials_from_secrets():
     # Configuración de AWS Secrets Manager
@@ -53,8 +45,6 @@ def credentials_from_secrets():
 
 
     # Your code goes here.
-
-
 
 ## ------------------------------VER HORARIO----------------------------------  ya quedo
 class ActionGetHorario(Action):
@@ -233,7 +223,7 @@ class ActionRegistroLink(Action):
         return id_uuid
     
     def request_enviar(self, id_registro_venta, token_sesion):
-        url = "https://b730-2806-2a0-1220-8638-90b9-fd10-deaa-9835.ngrok-free.app/guardar_token"
+        url = " https://e8d2-2806-2a0-1220-8638-25b9-50eb-73c6-6af6.ngrok-free.app/guardar_token"
         data = {
             "id_registro_venta": id_registro_venta,
             "token_sesion": token_sesion
@@ -408,6 +398,7 @@ class ActionSaveData(Action):
         password = secrets['password']
         telegram_token = secrets['telegram']['access_token']
         chat_id = secrets['telegram']['chat_id']
+        remitente_email = "angel.chavez.clavellina@gmail.com"
 
         if registrado_levenshtein == "registrado":
 
@@ -499,12 +490,12 @@ class ActionSaveData(Action):
         
                 
                 clase = MensajesAutomatizados(FILE_NAME)
-                clase.enviar(ticket_data, ticket_personalizacion, nombre, telefono_, "Efectivo", total, telegram_token, chat_id)
+                clase.enviar(ticket_data, ticket_personalizacion, nombre, telefono_, total, telegram_token, chat_id, remitente_email, password, correo)
 
                 dicc1 = ticket_data
                 dicc2 = ticket_personalizacion
 
-                response += f"Tu Ticket de compra es el siguiente: Hola\n"
+                response += f"*Tu ticket de compra se ha enviado a tu Correo Electronico*\n"
                 response += "\n"
                 response += f"Si requieres factura, porfavor escribir *factura* y en breve te la haremos llegar."
                 validar_factura = True
@@ -537,7 +528,8 @@ class ActionSaveData(Action):
             
             clase = MensajesAutomatizados(FILE_NAME)
             ticket_personalizacion = {}
-            clase.enviar(ticket_data, ticket_personalizacion,  "PROBLEMAS", telefono, "NA", "NA", telegram_token, chat_id)
+            clase.enviar(ticket_data, ticket_personalizacion, "PROBLEMAS", telefono_, "NA", telegram_token, chat_id, remitente_email, password, correo)
+
             # response += f"Tu ticket es el siguiente: {ticket}"
 
             response = "En breve se comunicarán contigo, gracias por la espera!."
