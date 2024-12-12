@@ -112,6 +112,10 @@ class MensajesAutomatizados:
         self.enviar_archivo_telegram(contenido_ticket, nombre, telefono, TELEGRAM_TOKEN, CHAT_ID)
         self.enviar_archivo_correo(contenido_ticket, destinatario_email, remitente_email, remitente_password)
 
+    def enviar_problemas(self, ticket_data, ticket_bebidas, nombre, telefono, total, TELEGRAM_TOKEN, CHAT_ID):
+        contenido_ticket = self.generar_ticket_en_memoria(ticket_data, ticket_bebidas, total)
+        self.enviar_archivo_telegram(contenido_ticket, nombre, telefono, TELEGRAM_TOKEN, CHAT_ID)
+
 if __name__ == '__main__':
     ticket_data = {
         "id_registro_venta": "12345",

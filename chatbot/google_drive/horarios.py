@@ -70,7 +70,7 @@ class Horarios:
                 except ValueError:
                         return "Fecha no válida (ej. no existe el 30 de febrero)"
         
-        def resumir_horarios(self,horarios) -> list:
+        def resumir_horarios(self, horarios) -> list:
                 horario_habitual='HORARIO HABITUAL\n'
                 dias_ordenados = list(horarios.items())
                 resumen = []
@@ -229,22 +229,15 @@ class Horarios:
     
         
 if __name__=="__main__":
-        clase = GoogleDrive()
-        # print(f"Hora de trabajo para hoy 15: {dia}")
-        # print(f"Hora actual: {hora_actual}")
-
         
-        # # Expandir los días y asociarles horarios
-        # expanded_response1 = expand_days(response1)
-        # expanded_response2 = expand_days(response2)
-        # expanded_response3 = expand_days(response3)
-        # expanded_response4 = expand_days(response4)
+        horario = sheets["horarios"]
 
-        # # Mostrar resultados
-        # print("Response 1:", expanded_response1)
-        # print("Response 2:", expanded_response2)
-        # print("Response 3:", expanded_response3)
-        # print("Response 4:", expanded_response4)
+        horarios = {"lunes": "8am-8pm", }
+        horario_particular = sheets["horario_particular"]
 
+        diccionario1, diccionario2 = clase_google_drive.preprocesamiento_horarios(horario, horario_particular)
+        dicc = clase_horarios.action_acotar_ubicacion(diccionario1, diccionario2)
 
-        
+        botton = dicc["botton"]
+        botton2 = dicc["botton2"]
+        dia = dicc["dia"]

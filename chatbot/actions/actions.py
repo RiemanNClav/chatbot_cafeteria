@@ -223,7 +223,7 @@ class ActionRegistroLink(Action):
         return id_uuid
     
     def request_enviar(self, id_registro_venta, token_sesion):
-        url = " https://e8d2-2806-2a0-1220-8638-25b9-50eb-73c6-6af6.ngrok-free.app/guardar_token"
+        url = "https://pedidos-impyrat.pythonanywhere.com/guardar_token"
         data = {
             "id_registro_venta": id_registro_venta,
             "token_sesion": token_sesion
@@ -528,7 +528,7 @@ class ActionSaveData(Action):
             
             clase = MensajesAutomatizados(FILE_NAME)
             ticket_personalizacion = {}
-            clase.enviar(ticket_data, ticket_personalizacion, "PROBLEMAS", telefono_, "NA", telegram_token, chat_id, remitente_email, password, correo)
+            clase.enviar_problemas(ticket_data, ticket_personalizacion, "PROBLEMAS", telefono_, "NA", telegram_token, chat_id)
 
             # response += f"Tu ticket es el siguiente: {ticket}"
 
@@ -579,5 +579,5 @@ class ActionRegistroCorreoElectronico(Action):
 
         dispatcher.utter_message(text=response)
         return [SlotSet("validar_factura", None), SlotSet("dicc1", None), SlotSet("dicc2", None)]
-
-        
+    
+    
